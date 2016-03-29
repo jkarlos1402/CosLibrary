@@ -13,20 +13,20 @@ import org.hibernate.Transaction;
 import org.hibernate.TypeMismatchException;
 import org.hibernate.exception.ConstraintViolationException;
 
-public class GenericDAO implements GenericDaoInterface {
+public class GenericDAO {
 
     private final HibernateUtil hibernateUtil;
     private final SessionFactory sessionFactory;
     private final Session session;
     private Transaction tx;
 
-    public GenericDAO() throws DataBaseException {
+    protected GenericDAO() throws DataBaseException {
         this.hibernateUtil = new HibernateUtil();
         sessionFactory = this.hibernateUtil.getSessionFactory();
         session = sessionFactory.openSession();
     }
 
-    public void closeDAO() {
+    protected void closeDAO() {
         if (session != null && sessionFactory != null) {
             session.clear();
             session.close();
@@ -34,8 +34,7 @@ public class GenericDAO implements GenericDaoInterface {
         }
     }
 
-    @Override
-    public <T, O extends Serializable> T findById(final Class clase, O id) throws DAOException {
+    protected <T, O extends Serializable> T findById(final Class clase, O id) throws DAOException {
         T elemento = null;
         try {
             elemento = (T) session.get(clase, id);
@@ -47,8 +46,7 @@ public class GenericDAO implements GenericDaoInterface {
         return elemento;
     }
 
-    @Override
-    public <T extends Serializable> List<T> findAll(final Class clase) throws DAOException {
+    protected <T extends Serializable> List<T> findAll(final Class clase) throws DAOException {
         List<T> elementos = null;
         Query query;
         try {
@@ -62,8 +60,7 @@ public class GenericDAO implements GenericDaoInterface {
         return elementos;
     }
 
-    @Override
-    public <T extends Serializable> void delete(final T persistentInstance) throws DAOException {
+    protected <T extends Serializable> void delete(final T persistentInstance) throws DAOException {
         try {
             tx = session.beginTransaction();
             session.delete(persistentInstance);
@@ -82,8 +79,7 @@ public class GenericDAO implements GenericDaoInterface {
         }
     }
 
-    @Override
-    public <T extends Serializable> void delete(final List<T> instances) throws DAOException {
+    protected <T extends Serializable> void delete(final List<T> instances) throws DAOException {
         try {
             tx = session.beginTransaction();
             if (instances != null && !instances.isEmpty()) {
@@ -106,8 +102,7 @@ public class GenericDAO implements GenericDaoInterface {
         }
     }
 
-    @Override
-    public <T extends Serializable> void saveOrUpdate(final T instance) throws DAOException {
+    protected <T extends Serializable> void saveOrUpdate(final T instance) throws DAOException {
         try {
             tx = session.beginTransaction();
             session.saveOrUpdate(instance);
@@ -137,8 +132,7 @@ public class GenericDAO implements GenericDaoInterface {
         }
     }
 
-    @Override
-    public <T extends Serializable> void saveOrUpdateAll(final List<T> instances) throws DAOException {
+    protected <T extends Serializable> void saveOrUpdateAll(final List<T> instances) throws DAOException {
         try {
             tx = session.beginTransaction();
             if (instances != null) {
@@ -161,8 +155,7 @@ public class GenericDAO implements GenericDaoInterface {
         }
     }
 
-    @Override
-    public <T extends Serializable> List<T> findByQuery(final Class clase, final String query) throws DAOException {
+    protected <T extends Serializable> List<T> findByQuery(final Class clase, final String query) throws DAOException {
         List<T> elementos = null;
         Query queryHql;
         try {
@@ -184,8 +177,7 @@ public class GenericDAO implements GenericDaoInterface {
         return elementos;
     }
 
-    @Override
-    public <T extends Serializable> List<T> findByComponent(final Class clase, final String columna, final String valor) throws DAOException {
+    protected <T extends Serializable> List<T> findByComponent(final Class clase, final String columna, final String valor) throws DAOException {
         List<T> elementos = null;
         Query queryHql;
         try {

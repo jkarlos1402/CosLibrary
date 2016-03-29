@@ -77,18 +77,14 @@ public class TblAccesoUsuarioPantallas implements Serializable {
     private Integer email;
     @Column(name = "Glosario")
     private Integer glosario;
-    @OneToOne(mappedBy = "tblAccesoUsuarioPantallas")
+    @OneToOne
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private TblAccesoUsuarioPantallasOperaciones tblAccesoUsuarioPantallasOperaciones;
-    @JoinColumns({
-        @JoinColumn(name = "IdMenu", referencedColumnName = "IdMenu"),
-        @JoinColumn(name = "IdEmpresa", referencedColumnName = "IdEmpresa")})
+   
     @ManyToOne(optional = false)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private TblAccesoPantallas tblAccesoPantallas;
-    @JoinColumns({
-        @JoinColumn(name = "IdEmpresa", referencedColumnName = "IdEmpresa"),
-        @JoinColumn(name = "IdTipoUsuario", referencedColumnName = "IdTipoUsuario")})
+    
     @ManyToOne(optional = false)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private TblAccesoTipoUsuario tblAccesoTipoUsuario;

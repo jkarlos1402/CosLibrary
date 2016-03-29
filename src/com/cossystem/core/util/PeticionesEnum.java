@@ -5,24 +5,32 @@
  */
 package com.cossystem.core.util;
 
+import com.cossystem.core.pojos.empresa.Empresas;
+
 /**
  *
  * @author TMXIDSJPINAM
  */
 public enum PeticionesEnum {
     
-    ALTA_EMPRESA(1),
-    ACTUALIZA_EMPRESA(2),
-    ELIMINA_EMPRESA(3);
+    ALTA_EMPRESA(1,Empresas.class),
+    ACTUALIZA_EMPRESA(2,Empresas.class),
+    ELIMINA_EMPRESA(3,Empresas.class);
     
     private final int tipoPeticion;
+    private final Class clase;
 
-    private PeticionesEnum(int tipoPeticion) {
+    private PeticionesEnum(int tipoPeticion,Class clase) {
         this.tipoPeticion = tipoPeticion;
+        this.clase = clase;
     }
 
     public int getTipoPeticion() {
         return tipoPeticion;
+    }
+
+    public Class getClase() {
+        return clase;
     }
         
 }

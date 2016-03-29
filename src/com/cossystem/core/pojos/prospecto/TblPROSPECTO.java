@@ -108,12 +108,10 @@ public class TblPROSPECTO implements Serializable {
     @JoinColumn(name = "IdOrigen", referencedColumnName = "IdOrigen")
     @ManyToOne
     @Cascade({CascadeType.SAVE_UPDATE})
-    private CatProspectoOrigen idOrigen;
-    @JoinColumn(name = "IDSTATUS", referencedColumnName = "IdStatus")
+    private CatProspectoOrigen idOrigen;    
     @ManyToOne
     @Cascade({CascadeType.SAVE_UPDATE})
-    private CatProspectoStatus idstatus;
-    @JoinColumn(name = "IDSTATUS", referencedColumnName = "idStatus")
+    private CatProspectoStatus idstatus;    
     @ManyToOne
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private TblPROSPECTOSSTATUS idstatus1;

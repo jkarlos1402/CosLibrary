@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cossystem.core.pojos.accesopantallas;
+package com.cossystem.core.pojos.catalogos;
 
+import com.cossystem.core.pojos.accesopantallas.TblAccesoUsuarioPantallasOperaciones;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;

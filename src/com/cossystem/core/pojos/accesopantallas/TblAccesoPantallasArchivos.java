@@ -8,7 +8,6 @@ package com.cossystem.core.pojos.accesopantallas;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -56,10 +55,7 @@ public class TblAccesoPantallasArchivos implements Serializable {
     @Column(name = "NombreArchivo")
     private String nombreArchivo;
     @Column(name = "IdTipoVinculo")
-    private Integer idTipoVinculo;
-    @JoinColumns({
-        @JoinColumn(name = "IdMenu", referencedColumnName = "IdMenu"),
-        @JoinColumn(name = "Idempresa", referencedColumnName = "IdEmpresa")})
+    private Integer idTipoVinculo;   
     @ManyToOne(optional = false)
     private TblAccesoPantallas tblAccesoPantallas;
 

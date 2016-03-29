@@ -5,6 +5,7 @@
  */
 package com.cossystem.core.pojos.accesopantallas;
 
+import com.cossystem.core.pojos.catalogos.CatAccesoPantallaOperacion;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -55,12 +56,8 @@ public class TblAccesoUsuarioPantallasOperaciones implements Serializable {
     @ManyToOne(optional = false)
     @Cascade({CascadeType.SAVE_UPDATE})
     private CatAccesoPantallaOperacion idOperacion;
-    @JoinColumns({
-        @JoinColumn(name = "IdEmpresa", referencedColumnName = "IdEmpresa"),
-        @JoinColumn(name = "IdUsuarioPantalla", referencedColumnName = "IdUsuarioPantalla"),
-        @JoinColumn(name = "IdTipoUsuario", referencedColumnName = "IdTipoUsuario"),
-        @JoinColumn(name = "IdMenu", referencedColumnName = "IdMenu")})
-    @OneToOne(optional = false)
+    
+    @OneToOne(optional = false,mappedBy = "tblAccesoUsuarioPantallasOperaciones")
     private TblAccesoUsuarioPantallas tblAccesoUsuarioPantallas;
 
     public int getIdEmpresa() {

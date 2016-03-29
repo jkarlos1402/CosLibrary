@@ -6,6 +6,7 @@
 package com.cossystem.core.pojos.empresa;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,7 +25,7 @@ public class Empresas implements Serializable {
     private List<TblEmpresa> empresas = null;
 
     public Empresas() {
-        // nothing
+        empresas = new ArrayList<>();
     }
 
     public Empresas(List<TblEmpresa> empresas) {
