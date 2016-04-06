@@ -61,7 +61,9 @@
         <mapping class="com.cossystem.core.pojos.catalogos.CatCPESTADO"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatCPTITULOESTADISTICA"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatCPTITULOESTADISTICADET"/>
+        <mapping class="com.cossystem.core.pojos.catalogos.CatMarca"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatPac"/>
+        <mapping class="com.cossystem.core.pojos.catalogos.CatParentesco"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatProspectoOrigen"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatProspectoPuestos"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatProspectoStatus"/>
