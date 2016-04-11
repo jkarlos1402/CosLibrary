@@ -56,11 +56,13 @@
         
         <mapping class="com.cossystem.core.pojos.catalogos.CatAccesoPantallaOperacion" />
         <mapping class="com.cossystem.core.pojos.catalogos.CatActividadStatus"/>
+        <mapping class="com.cossystem.core.pojos.catalogos.CatArea"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatCPCOLONIA"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatCPDELEGACION"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatCPESTADO"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatCPTITULOESTADISTICA"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatCPTITULOESTADISTICADET"/>
+        <mapping class="com.cossystem.core.pojos.catalogos.CatDivisa"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatMarca"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatPac"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatParentesco"/>
@@ -69,9 +71,11 @@
         <mapping class="com.cossystem.core.pojos.catalogos.CatProspectoStatus"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatRegionGeografica"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatServidoresCorreo"/>
+        <mapping class="com.cossystem.core.pojos.catalogos.CatSexo"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatTipoFacturacion"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatTipoIncidencias"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatTipoSolicitudGastos"/>        
+        <mapping class="com.cossystem.core.pojos.catalogos.Conftablajson"/>        
         
         <mapping class="com.cossystem.core.pojos.chat.TblChatBienvenida" />        
         <mapping class="com.cossystem.core.pojos.chat.TblChatDia" />        
