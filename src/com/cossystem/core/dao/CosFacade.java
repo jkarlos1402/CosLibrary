@@ -38,18 +38,29 @@ public class CosFacade {
 
     public <T extends Serializable> void ejecutaSolicitud(PeticionesEnum tipoSolicitud, Class clase, T instancia) throws CossException, DAOException {
         switch (tipoSolicitud) {
-            case ALTA_EMPRESA:                               
+            case ALTA_EMPRESA:
             case ACTUALIZA_EMPRESA:
                 if (clase != null && clase.getName().equals(tipoSolicitud.getClase().getName())) {
                     List<Class<?>> elementos = obtieneLista(tipoSolicitud.getClase(), instancia);
-                    genericDAO.saveOrUpdateAll(elementos);                    
+                    genericDAO.saveOrUpdateAll(elementos);
                 } else {
                     throw new CossException("Error: contacte al daministrador, código de error: " + 1);
                 }
                 break;
             default:
                 System.out.println("no se eligio una opcion valida");
-        }        
+        }
+    }
+
+    public <T extends Serializable> List<T> ejecutaSolicitud(PeticionesEnum tipoSolicitud, Class clase) throws DAOException {
+        List<T> lista = null;
+        switch (tipoSolicitud) {
+            case LISTA_CATALOGO_SIMPLE:
+                System.out.println("entro a obtener de base de datos");
+                lista = genericDAO.findAll(clase);
+                break;
+        }
+        return lista;
     }
 
     private <T extends Serializable> List<Class<?>> obtieneLista(Class clase, T instancia) throws CossException {
@@ -70,9 +81,9 @@ public class CosFacade {
         }
         return result;
     }
-    
-    public void closeFacade(){
-        if(genericDAO != null){
+
+    public void closeFacade() {
+        if (genericDAO != null) {
             genericDAO.closeDAO();
         }
     }
