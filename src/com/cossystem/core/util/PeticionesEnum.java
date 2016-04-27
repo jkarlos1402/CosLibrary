@@ -16,7 +16,8 @@ public enum PeticionesEnum {
     ALTA_EMPRESA(1,Empresas.class),
     ACTUALIZA_EMPRESA(2,Empresas.class),
     ELIMINA_EMPRESA(3,Empresas.class),
-    LISTA_CATALOGO_SIMPLE(3,null);
+    LISTA_CATALOGO_SIMPLE(3,null),
+    GUARDA_CATALOGO_SIMPLE(4,null);
     
     private final int tipoPeticion;
     private final Class clase;

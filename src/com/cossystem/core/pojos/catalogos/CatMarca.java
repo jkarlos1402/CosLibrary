@@ -98,7 +98,7 @@ public class CatMarca implements Serializable {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(Object object) {       
         // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof CatMarca)) {
             return false;
@@ -112,7 +112,7 @@ public class CatMarca implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cossystem.core.pojos.catalogos.CatMarca[ idMarca=" + idMarca + " ]";
+        return "CatMarca{" + "idEmpresa=" + idEmpresa + ", idMarca=" + idMarca + ", codigo=" + codigo + ", descripcion=" + descripcion + ", idStatus=" + idStatus + '}';
     }
     
 }

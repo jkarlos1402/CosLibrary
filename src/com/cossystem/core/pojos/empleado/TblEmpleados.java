@@ -189,6 +189,10 @@ public class TblEmpleados implements Serializable {
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private List<TblEmpleadosCliente> tblEmpleadosClienteList;
 
+    public TblEmpleados() {
+        //to do
+    }
+
     public TblEmpleados(Integer idEmpleado, int idEmpresa, String claveEmpleado) {
         this.idEmpleado = idEmpleado;
         this.idEmpresa = idEmpresa;

@@ -109,11 +109,7 @@ public class GenericDAO {
             tx.commit();
         } catch (HibernateException | IllegalArgumentException e) {
             String message;
-            if (e instanceof Throwable) {
-                message = e.getCause().getMessage();
-            } else {
-                message = e.getMessage();
-            }
+            message = e.getCause().getMessage();
             throw new DAOException("Error al guardar la entidad: entidad no conocida o no válida, " + message);
         } finally {
             try {

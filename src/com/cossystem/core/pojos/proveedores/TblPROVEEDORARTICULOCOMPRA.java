@@ -53,6 +53,10 @@ public class TblPROVEEDORARTICULOCOMPRA implements Serializable {
     @ManyToOne(optional = false)
     private TblPROVEEDOR idproveedorEnc;
 
+    public TblPROVEEDORARTICULOCOMPRA() {
+        //to do
+    }
+
     public TblPROVEEDORARTICULOCOMPRA(Integer idcompra, int idarticulo) {
         this.idcompra = idcompra;
         this.idarticulo = idarticulo;
