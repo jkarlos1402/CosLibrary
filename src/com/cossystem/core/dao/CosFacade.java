@@ -44,18 +44,25 @@ public class CosFacade {
                     List<Class<?>> elementos = obtieneLista(tipoSolicitud.getClase(), instancia);
                     genericDAO.saveOrUpdateAll(elementos);
                 } else {
-                    throw new CossException("Error: contacte al daministrador, código de error: " + 1);
+                    throw new CossException("Error: contacte al daministrador, código de error: " + 2);
                 }
                 break;
             case GUARDA_CATALOGO_SIMPLE:
                 if (clase != null && clase.getName().equals(instancia.getClass().getName())) {
                     genericDAO.saveOrUpdate(instancia);
                 } else {
-                    throw new CossException("Error: contacte al daministrador, código de error: " + 1);
+                    throw new CossException("Error: contacte al daministrador, código de error: " + 2);
+                }
+                break;
+            case ELIMINA_CATALOGO_SIMPLE:
+                if (clase != null && clase.getName().equals(instancia.getClass().getName())) {
+                    genericDAO.delete(instancia);
+                } else {
+                    throw new CossException("Error: contacte al daministrador, código de error: " + 2);
                 }
                 break;
             default:
-                System.out.println("no se eligio una opcion valida");
+                throw new CossException("Error: contacte al daministrador, código de error: " + 3);
         }
     }
 
