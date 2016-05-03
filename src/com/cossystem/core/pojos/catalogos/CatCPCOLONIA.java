@@ -53,10 +53,8 @@ public class CatCPCOLONIA implements Serializable {
     @Column(name = "url_googlemap")
     private String urlGooglemap;
     @Column(name = "url_otra")
-    private String urlOtra;
-    @JoinColumns({
-        @JoinColumn(name = "IdEstado", referencedColumnName = "IdEstado"),
-        @JoinColumn(name = "IDDELEGACION", referencedColumnName = "IDDELEGACION")})
+    private String urlOtra;    
+    @JoinColumn(name = "IDDELEGACION", referencedColumnName = "IDDELEGACION")
     @ManyToOne(optional = false)
     private CatCPDELEGACION catCPDELEGACION;
 

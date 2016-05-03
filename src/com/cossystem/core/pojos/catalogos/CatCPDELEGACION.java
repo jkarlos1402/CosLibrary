@@ -10,6 +10,7 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -55,7 +56,7 @@ public class CatCPDELEGACION implements Serializable {
     private String urlGooglemap;
     @Column(name = "url_otra")
     private String urlOtra;
-    @OneToMany(mappedBy = "catCPDELEGACION")
+    @OneToMany(mappedBy = "catCPDELEGACION",fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private List<CatCPCOLONIA> catCPCOLONIAList;
     @JoinColumn(name = "IdEstado", referencedColumnName = "IdEstado")

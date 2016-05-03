@@ -62,7 +62,7 @@ public class TblEmpresaLugarExpedicion implements Serializable {
     @JoinColumn(name = "IdEstado", referencedColumnName = "IdEstado")
     @ManyToOne
     private CatCPESTADO idEstado;
-    @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa", insertable = false, updatable = false)
+    @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
     @ManyToOne(optional = false)
     private TblEmpresa tblEmpresa;
 

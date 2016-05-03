@@ -105,7 +105,7 @@ public class CatRegionGeografica implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cossystem.core.pojos.empresa.CatRegionGeografica[ idRegionGeografica=" + idRegionGeografica + " ]";
+        return descripcion;
     }
     
 }

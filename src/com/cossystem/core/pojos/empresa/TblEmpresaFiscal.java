@@ -111,7 +111,7 @@ public class TblEmpresaFiscal implements Serializable {
     @ManyToOne
     @Cascade({CascadeType.SAVE_UPDATE})
     private CatTipoFacturacion idTipoFacturacion;
-    @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa", insertable = false, updatable = false)
+    @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
     @ManyToOne(optional = false)
     private TblEmpresa tblEmpresa;
 

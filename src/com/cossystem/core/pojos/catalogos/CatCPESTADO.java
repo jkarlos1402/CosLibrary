@@ -14,6 +14,7 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -65,19 +66,19 @@ public class CatCPESTADO implements Serializable {
     @ManyToOne
     @Cascade({CascadeType.SAVE_UPDATE})
     private CatRegionGeografica idRegionGeografica;
-    @OneToMany(mappedBy = "catCPESTADO")
+    @OneToMany(mappedBy = "catCPESTADO",fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private List<CatCPDELEGACION> catCPDELEGACIONList;
-    @OneToMany(mappedBy = "idEstado")
+    @OneToMany(mappedBy = "idEstado",fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private List<CatCPTITULOESTADISTICADET> catCPTITULOESTADISTICADETList;
-    @OneToMany(mappedBy = "idEstado")    
+    @OneToMany(mappedBy = "idEstado",fetch = FetchType.LAZY)    
     private List<TblEmpresaReportes> tblEmpresaReportesList;
-    @OneToMany(mappedBy = "idEstado")    
+    @OneToMany(mappedBy = "idEstado",fetch = FetchType.LAZY)    
     private List<TblEmpresaDirEntrega> tblEmpresaDirEntregaList;
-    @OneToMany(mappedBy = "idEstado")   
+    @OneToMany(mappedBy = "idEstado",fetch = FetchType.LAZY)   
     private List<TblEmpresaLugarExpedicion> tblEmpresaLugarExpedicionList;
-    @OneToMany(mappedBy = "idEstado")    
+    @OneToMany(mappedBy = "idEstado",fetch = FetchType.LAZY)    
     private List<TblEmpresaFiscal> tblEmpresaFiscalList;
 
     public Integer getIdEstado() {
@@ -220,7 +221,7 @@ public class CatCPESTADO implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cossystem.core.pojos.empresa.CatCPESTADO[ idEstado=" + idEstado + " ]";
+        return nombreEstado;
     }
 
 }

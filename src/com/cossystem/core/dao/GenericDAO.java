@@ -20,13 +20,13 @@ public class GenericDAO {
     private final Session session;
     private Transaction tx;
 
-    protected GenericDAO() throws DataBaseException {
+    public GenericDAO() throws DataBaseException {
         this.hibernateUtil = new HibernateUtil();
         sessionFactory = this.hibernateUtil.getSessionFactory();
         session = sessionFactory.openSession();
     }
 
-    protected void closeDAO() {
+    public void closeDAO() {
         if (session != null && sessionFactory != null) {
             session.clear();
             session.close();
@@ -34,7 +34,7 @@ public class GenericDAO {
         }
     }
 
-    protected <T, O extends Serializable> T findById(final Class clase, O id) throws DAOException {
+    public <T, O extends Serializable> T findById(final Class clase, O id) throws DAOException {
         T elemento = null;
         try {
             elemento = (T) session.get(clase, id);
@@ -46,7 +46,7 @@ public class GenericDAO {
         return elemento;
     }
 
-    protected <T extends Serializable> List<T> findAll(final Class clase) throws DAOException {
+    public <T extends Serializable> List<T> findAll(final Class clase) throws DAOException {
         List<T> elementos = null;
         Query query;
         try {
@@ -60,7 +60,7 @@ public class GenericDAO {
         return elementos;
     }
 
-    protected <T extends Serializable> void delete(final T persistentInstance) throws DAOException {
+    public <T extends Serializable> void delete(final T persistentInstance) throws DAOException {
         try {
             tx = session.beginTransaction();
             session.delete(persistentInstance);
@@ -79,7 +79,7 @@ public class GenericDAO {
         }
     }
 
-    protected <T extends Serializable> void delete(final List<T> instances) throws DAOException {
+    public <T extends Serializable> void delete(final List<T> instances) throws DAOException {
         try {
             tx = session.beginTransaction();
             if (instances != null && !instances.isEmpty()) {
@@ -102,14 +102,14 @@ public class GenericDAO {
         }
     }
 
-    protected <T extends Serializable> void saveOrUpdate(final T instance) throws DAOException {
+    public <T extends Serializable> void saveOrUpdate(final T instance) throws DAOException {
         try {
             tx = session.beginTransaction();
             session.saveOrUpdate(instance);
             tx.commit();
         } catch (HibernateException | IllegalArgumentException e) {
             String message;
-            message = e.getCause().getMessage();
+            message = e.getMessage();
             throw new DAOException("Error al guardar la entidad: entidad no conocida o no válida, " + message);
         } finally {
             try {
@@ -117,18 +117,13 @@ public class GenericDAO {
                     tx.rollback();
                 }
             } catch (Exception ex) {
-                String message;
-                if (ex instanceof Throwable) {
-                    message = ex.getCause().getMessage();
-                } else {
-                    message = ex.getMessage();
-                }
+                String message = ex.getMessage();                
                 throw new DAOException("Error: No se puede guardar el registro, " + message);
             }
         }
     }
 
-    protected <T extends Serializable> void saveOrUpdateAll(final List<T> instances) throws DAOException {
+    public <T extends Serializable> void saveOrUpdateAll(final List<T> instances) throws DAOException {
         try {
             tx = session.beginTransaction();
             if (instances != null) {
@@ -151,7 +146,7 @@ public class GenericDAO {
         }
     }
 
-    protected <T extends Serializable> List<T> findByQuery(final Class clase, final String query) throws DAOException {
+    public <T extends Serializable> List<T> findByQuery(final Class clase, final String query) throws DAOException {
         List<T> elementos = null;
         Query queryHql;
         try {
@@ -173,7 +168,7 @@ public class GenericDAO {
         return elementos;
     }
 
-    protected <T extends Serializable> List<T> findByComponent(final Class clase, final String columna, final String valor) throws DAOException {
+    public <T extends Serializable> List<T> findByComponent(final Class clase, final String columna, final String valor) throws DAOException {
         List<T> elementos = null;
         Query queryHql;
         try {
