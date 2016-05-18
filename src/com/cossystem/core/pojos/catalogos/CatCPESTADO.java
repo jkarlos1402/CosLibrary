@@ -63,8 +63,7 @@ public class CatCPESTADO implements Serializable {
     @Column(name = "url_otra")
     private String urlOtra;
     @JoinColumn(name = "IdRegionGeografica", referencedColumnName = "IdRegionGeografica")
-    @ManyToOne
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @ManyToOne    
     private CatRegionGeografica idRegionGeografica;
     @OneToMany(mappedBy = "catCPESTADO",fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})

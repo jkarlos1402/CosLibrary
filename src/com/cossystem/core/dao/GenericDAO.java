@@ -12,6 +12,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.TypeMismatchException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.exception.DataException;
 
 public class GenericDAO {
 
@@ -40,8 +41,6 @@ public class GenericDAO {
             elemento = (T) session.get(clase, id);
         } catch (TypeMismatchException e) {
             throw new DAOException("Error, parámetros incompatibles: " + e.getMessage());
-        } finally {
-            session.flush();
         }
         return elemento;
     }
@@ -54,8 +53,6 @@ public class GenericDAO {
             elementos = query.list();
         } catch (HibernateException e) {
             throw new DAOException("Error no identificado: " + e.getMessage());
-        } finally {
-            session.flush();
         }
         return elementos;
     }
@@ -68,11 +65,14 @@ public class GenericDAO {
         } catch (HibernateException | IllegalArgumentException e) {
             throw new DAOException("Error: entidad no conocida o no válida, " + e.getMessage());
         } finally {
+            if (tx.wasCommitted()) {
+                session.flush();
+            }
             try {
                 if (tx.isActive()) {
                     tx.rollback();
+                    session.clear();
                 }
-                session.flush();
             } catch (ConstraintViolationException | ObjectDeletedException ex) {
                 throw new DAOException("Error: al eliminar registro, " + ex.getMessage());
             }
@@ -91,11 +91,14 @@ public class GenericDAO {
         } catch (HibernateException | IllegalArgumentException e) {
             throw new DAOException("Error: entidad no conocida o no válida, " + e.getMessage());
         } finally {
+            if (tx.wasCommitted()) {
+                session.flush();
+            }
             try {
                 if (tx.isActive()) {
                     tx.rollback();
+                    session.clear();
                 }
-                session.flush();
             } catch (ConstraintViolationException | ObjectDeletedException ex) {
                 throw new DAOException("Error: al eliminar registro, " + ex.getMessage());
             }
@@ -107,18 +110,21 @@ public class GenericDAO {
             tx = session.beginTransaction();
             session.saveOrUpdate(instance);
             tx.commit();
-        } catch (HibernateException | IllegalArgumentException e) {
-            String message;
-            message = e.getMessage();
+        } catch (HibernateException | IllegalArgumentException e) {            
+            String message = e.getMessage();
             throw new DAOException("Error al guardar la entidad: entidad no conocida o no válida, " + message);
         } finally {
+            if (tx.wasCommitted()) {
+                session.flush();
+            }
             try {
-                if (tx.isActive()) {
+                if (tx.isActive()) {                    
                     tx.rollback();
+                    session.clear();
                 }
-            } catch (Exception ex) {
-                String message = ex.getMessage();                
-                throw new DAOException("Error: No se puede guardar el registro, " + message);
+            } catch (Exception ex) {                
+                String message = ex.getMessage();
+                throw new DAOException("Error: No se puede realizar rollback, " + message);
             }
         }
     }
@@ -135,11 +141,14 @@ public class GenericDAO {
         } catch (HibernateException | IllegalArgumentException e) {
             throw new DAOException("Error: entidad no conocida o no válida, " + e.getMessage());
         } finally {
+            if (tx.wasCommitted()) {
+                session.flush();
+            }
             try {
                 if (tx.isActive()) {
                     tx.rollback();
+                    session.clear();
                 }
-                session.flush();
             } catch (Exception ex) {
                 throw new DAOException("Error: No se puede guardar el registro, " + ex.getMessage());
             }
@@ -162,8 +171,6 @@ public class GenericDAO {
             }
         } catch (HibernateException | IllegalArgumentException e) {
             throw new DAOException("Error no identificado: " + e.getMessage());
-        } finally {
-            session.flush();
         }
         return elementos;
     }
@@ -185,8 +192,6 @@ public class GenericDAO {
             }
         } catch (HibernateException e) {
             throw new DAOException("Error no identificado: " + e.getMessage());
-        } finally {
-            session.flush();
         }
         return elementos;
     }
