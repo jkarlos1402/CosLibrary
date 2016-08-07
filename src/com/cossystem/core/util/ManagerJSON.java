@@ -5,6 +5,7 @@
  */
 package com.cossystem.core.util;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -12,7 +13,7 @@ import org.json.JSONObject;
  * @author TMXIDSJPINAM
  */
 public class ManagerJSON {
-    public static JSONObject getJSONObjectFromString(String jsonString){
+    public static JSONObject getJSONObjectFromString(String jsonString) throws JSONException{
         return new JSONObject(jsonString);
     }
 }

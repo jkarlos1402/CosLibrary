@@ -23,14 +23,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author TMXIDSJPINAM
+ * @author JC
  */
 @Entity
-@Table(name = "Cat_Area")
+@Table(name = "Cat_EmpNivel")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "CatArea.findAll", query = "SELECT c FROM CatArea c")})
-public class CatArea implements Serializable {
+    @NamedQuery(name = "CatEmpNivel.findAll", query = "SELECT c FROM CatEmpNivel c")})
+public class CatEmpNivel implements Serializable {
 
     private static final long serialVersionUID = 1L;   
     @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
@@ -39,18 +39,16 @@ public class CatArea implements Serializable {
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdArea")
-    private Integer idArea;
-    @Column(name = "Area_Descripcion")
-    private String areaDescripcion;
-    @Column(name = "IdStatus")
-    private Boolean idStatus;
+    @Column(name = "IdNivel")
+    private Integer idNivel;
+    @Column(name = "Nivel_Nombre")
+    private String nivelNombre;
 
-    public CatArea() {
+    public CatEmpNivel() {
     }
 
-    public CatArea(Integer idArea) {
-        this.idArea = idArea;
+    public CatEmpNivel(Integer idNivel) {
+        this.idNivel = idNivel;
     }
 
     public TblEmpresa getIdEmpresa() {
@@ -61,45 +59,37 @@ public class CatArea implements Serializable {
         this.idEmpresa = idEmpresa;
     }
 
-    public Integer getIdArea() {
-        return idArea;
+    public Integer getIdNivel() {
+        return idNivel;
     }
 
-    public void setIdArea(Integer idArea) {
-        this.idArea = idArea;
+    public void setIdNivel(Integer idNivel) {
+        this.idNivel = idNivel;
     }
 
-    public String getAreaDescripcion() {
-        return areaDescripcion;
+    public String getNivelNombre() {
+        return nivelNombre;
     }
 
-    public void setAreaDescripcion(String areaDescripcion) {
-        this.areaDescripcion = areaDescripcion;
-    }
-
-    public Boolean getIdStatus() {
-        return idStatus;
-    }
-
-    public void setIdStatus(Boolean idStatus) {
-        this.idStatus = idStatus;
+    public void setNivelNombre(String nivelNombre) {
+        this.nivelNombre = nivelNombre;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idArea != null ? idArea.hashCode() : 0);
+        hash += (idNivel != null ? idNivel.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CatArea)) {
+        if (!(object instanceof CatEmpNivel)) {
             return false;
         }
-        CatArea other = (CatArea) object;
-        if ((this.idArea == null && other.idArea != null) || (this.idArea != null && !this.idArea.equals(other.idArea))) {
+        CatEmpNivel other = (CatEmpNivel) object;
+        if ((this.idNivel == null && other.idNivel != null) || (this.idNivel != null && !this.idNivel.equals(other.idNivel))) {
             return false;
         }
         return true;
@@ -107,7 +97,7 @@ public class CatArea implements Serializable {
 
     @Override
     public String toString() {
-        return areaDescripcion;
+        return "com.cossystem.core.pojos.catalogos.CatEmpNivel[ idNivel=" + idNivel + " ]";
     }
     
 }

@@ -43,9 +43,7 @@ public class CatActividadStatus implements Serializable {
     @Column(name = "IdStatus")
     private Integer idStatus;
     @Column(name = "EmpStatus_Nombre")
-    private String empStatusNombre;
-    @OneToMany(mappedBy = "idStatus")
-    private List<TblEmpleadosDiarioActividadDet> tblEmpleadosDiarioActividadDetList;
+    private String empStatusNombre;    
 
     public CatActividadStatus() {
     }
@@ -86,15 +84,7 @@ public class CatActividadStatus implements Serializable {
         this.empStatusNombre = empStatusNombre;
     }
 
-    @XmlTransient
-    public List<TblEmpleadosDiarioActividadDet> getTblEmpleadosDiarioActividadDetList() {
-        return tblEmpleadosDiarioActividadDetList;
-    }
-
-    public void setTblEmpleadosDiarioActividadDetList(List<TblEmpleadosDiarioActividadDet> tblEmpleadosDiarioActividadDetList) {
-        this.tblEmpleadosDiarioActividadDetList = tblEmpleadosDiarioActividadDetList;
-    }
-
+   
     @Override
     public int hashCode() {
         int hash = 0;

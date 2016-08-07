@@ -23,34 +23,34 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author TMXIDSJPINAM
+ * @author JC
  */
 @Entity
-@Table(name = "Cat_Area")
+@Table(name = "Cat_EmpStatus")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "CatArea.findAll", query = "SELECT c FROM CatArea c")})
-public class CatArea implements Serializable {
+    @NamedQuery(name = "CatEmpStatus.findAll", query = "SELECT c FROM CatEmpStatus c")})
+public class CatEmpStatus implements Serializable {
 
-    private static final long serialVersionUID = 1L;   
-    @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TblEmpresa idEmpresa;
+    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdArea")
-    private Integer idArea;
-    @Column(name = "Area_Descripcion")
-    private String areaDescripcion;
+    @Column(name = "IdEmpStatus")
+    private Integer idEmpStatus;
+    @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TblEmpresa idEmpresa;
     @Column(name = "IdStatus")
-    private Boolean idStatus;
+    private Integer idStatus;
+    @Column(name = "EmpStatus_Nombre")
+    private String empStatusNombre;
 
-    public CatArea() {
+    public CatEmpStatus() {
     }
 
-    public CatArea(Integer idArea) {
-        this.idArea = idArea;
+    public CatEmpStatus(Integer idEmpStatus) {
+        this.idEmpStatus = idEmpStatus;
     }
 
     public TblEmpresa getIdEmpresa() {
@@ -61,45 +61,45 @@ public class CatArea implements Serializable {
         this.idEmpresa = idEmpresa;
     }
 
-    public Integer getIdArea() {
-        return idArea;
+    public Integer getIdEmpStatus() {
+        return idEmpStatus;
     }
 
-    public void setIdArea(Integer idArea) {
-        this.idArea = idArea;
+    public void setIdEmpStatus(Integer idEmpStatus) {
+        this.idEmpStatus = idEmpStatus;
     }
 
-    public String getAreaDescripcion() {
-        return areaDescripcion;
-    }
-
-    public void setAreaDescripcion(String areaDescripcion) {
-        this.areaDescripcion = areaDescripcion;
-    }
-
-    public Boolean getIdStatus() {
+    public Integer getIdStatus() {
         return idStatus;
     }
 
-    public void setIdStatus(Boolean idStatus) {
+    public void setIdStatus(Integer idStatus) {
         this.idStatus = idStatus;
+    }
+
+    public String getEmpStatusNombre() {
+        return empStatusNombre;
+    }
+
+    public void setEmpStatusNombre(String empStatusNombre) {
+        this.empStatusNombre = empStatusNombre;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idArea != null ? idArea.hashCode() : 0);
+        hash += (idEmpStatus != null ? idEmpStatus.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CatArea)) {
+        if (!(object instanceof CatEmpStatus)) {
             return false;
         }
-        CatArea other = (CatArea) object;
-        if ((this.idArea == null && other.idArea != null) || (this.idArea != null && !this.idArea.equals(other.idArea))) {
+        CatEmpStatus other = (CatEmpStatus) object;
+        if ((this.idEmpStatus == null && other.idEmpStatus != null) || (this.idEmpStatus != null && !this.idEmpStatus.equals(other.idEmpStatus))) {
             return false;
         }
         return true;
@@ -107,7 +107,7 @@ public class CatArea implements Serializable {
 
     @Override
     public String toString() {
-        return areaDescripcion;
+        return empStatusNombre;
     }
-    
+
 }

@@ -5,12 +5,14 @@
  */
 package com.cossystem.core.pojos.empleado;
 
+import com.cossystem.core.pojos.empresa.TblEmpresa;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +21,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -39,14 +43,15 @@ import org.hibernate.annotations.CascadeType;
     @NamedQuery(name = "TblEmpleadosDiarioActividad.findAll", query = "SELECT t FROM TblEmpleadosDiarioActividad t")})
 public class TblEmpleadosDiarioActividad implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Column(name = "IdEmpresa")
-    private Integer idEmpresa;
+    private static final long serialVersionUID = 1L;        
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdActividad")
     private Integer idActividad;
+    @JoinColumn(name = "IdEmpresa", referencedColumnName = "idEmpresa")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TblEmpresa idEmpresa;
     @Column(name = "Fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
@@ -75,11 +80,11 @@ public class TblEmpleadosDiarioActividad implements Serializable {
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private List<TblEmpleadosDiarioActividadDet> tblEmpleadosDiarioActividadDetList;
 
-    public Integer getIdEmpresa() {
+    public TblEmpresa getIdEmpresa() {
         return idEmpresa;
     }
 
-    public void setIdEmpresa(Integer idEmpresa) {
+    public void setIdEmpresa(TblEmpresa idEmpresa) {
         this.idEmpresa = idEmpresa;
     }
 

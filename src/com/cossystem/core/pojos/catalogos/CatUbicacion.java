@@ -23,34 +23,34 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author TMXIDSJPINAM
+ * @author JC
  */
 @Entity
-@Table(name = "Cat_Area")
+@Table(name = "Cat_Ubicacion")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "CatArea.findAll", query = "SELECT c FROM CatArea c")})
-public class CatArea implements Serializable {
+    @NamedQuery(name = "CatUbicacion.findAll", query = "SELECT c FROM CatUbicacion c")})
+public class CatUbicacion implements Serializable {
 
     private static final long serialVersionUID = 1L;   
-    @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
+    @JoinColumn(name = "IdEmpresa", referencedColumnName = "idEmpresa")
     @ManyToOne(fetch = FetchType.LAZY)
     private TblEmpresa idEmpresa;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdArea")
-    private Integer idArea;
-    @Column(name = "Area_Descripcion")
-    private String areaDescripcion;
+    @Column(name = "IdUbicacion")
+    private Integer idUbicacion;
+    @Column(name = "Descripcion")
+    private String descripcion;
     @Column(name = "IdStatus")
-    private Boolean idStatus;
+    private boolean idStatus;
 
-    public CatArea() {
+    public CatUbicacion() {
     }
 
-    public CatArea(Integer idArea) {
-        this.idArea = idArea;
+    public CatUbicacion(Integer idUbicacion) {
+        this.idUbicacion = idUbicacion;
     }
 
     public TblEmpresa getIdEmpresa() {
@@ -61,45 +61,45 @@ public class CatArea implements Serializable {
         this.idEmpresa = idEmpresa;
     }
 
-    public Integer getIdArea() {
-        return idArea;
+    public Integer getIdUbicacion() {
+        return idUbicacion;
     }
 
-    public void setIdArea(Integer idArea) {
-        this.idArea = idArea;
+    public void setIdUbicacion(Integer idUbicacion) {
+        this.idUbicacion = idUbicacion;
     }
 
-    public String getAreaDescripcion() {
-        return areaDescripcion;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setAreaDescripcion(String areaDescripcion) {
-        this.areaDescripcion = areaDescripcion;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
-    public Boolean getIdStatus() {
+    public boolean getIdStatus() {
         return idStatus;
     }
 
-    public void setIdStatus(Boolean idStatus) {
+    public void setIdStatus(boolean idStatus) {
         this.idStatus = idStatus;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idArea != null ? idArea.hashCode() : 0);
+        hash += (idUbicacion != null ? idUbicacion.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CatArea)) {
+        if (!(object instanceof CatUbicacion)) {
             return false;
         }
-        CatArea other = (CatArea) object;
-        if ((this.idArea == null && other.idArea != null) || (this.idArea != null && !this.idArea.equals(other.idArea))) {
+        CatUbicacion other = (CatUbicacion) object;
+        if ((this.idUbicacion == null && other.idUbicacion != null) || (this.idUbicacion != null && !this.idUbicacion.equals(other.idUbicacion))) {
             return false;
         }
         return true;
@@ -107,7 +107,7 @@ public class CatArea implements Serializable {
 
     @Override
     public String toString() {
-        return areaDescripcion;
+        return "com.cossystem.core.pojos.catalogos.CatUbicacion[ idUbicacion=" + idUbicacion + " ]";
     }
     
 }

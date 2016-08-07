@@ -3,9 +3,9 @@
 <hibernate-configuration>
     <session-factory>
         <property name="connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
-        <property name="connection.url">jdbc:sqlserver://localhost\SQLEXPRESS:1433;databaseName=JDV_Ticket_Nuevo</property>
-        <property name="connection.username">user</property>
-        <property name="connection.password">Password123</property>
+        <property name="connection.url">jdbc:sqlserver://localhost\SQLEXPRESS:1433;databaseName=CosAdminV11</property>
+        <property name="connection.username">usuario1</property>
+        <property name="connection.password">usuario1</property>
         <property name="dialect">org.hibernate.dialect.SQLServer2012Dialect</property>
         <property name="show_sql">true</property>
         <property name="format_sql">false</property>
@@ -76,6 +76,14 @@
         <mapping class="com.cossystem.core.pojos.catalogos.CatTipoIncidencias"/>
         <mapping class="com.cossystem.core.pojos.catalogos.CatTipoSolicitudGastos"/>        
         <mapping class="com.cossystem.core.pojos.catalogos.Conftablajson"/>        
+        <mapping class="com.cossystem.core.pojos.catalogos.CatUsuarios"/>        
+        <mapping class="com.cossystem.core.pojos.catalogos.CatEmpStatus"/>        
+        <mapping class="com.cossystem.core.pojos.catalogos.CatEmpOrigen"/>        
+        <mapping class="com.cossystem.core.pojos.catalogos.CatDepartamento"/>        
+        <mapping class="com.cossystem.core.pojos.catalogos.CatUbicacion"/>        
+        <mapping class="com.cossystem.core.pojos.catalogos.CatEmpPuestos"/>        
+        <mapping class="com.cossystem.core.pojos.catalogos.CatEmpNivel"/>        
+        <mapping class="com.cossystem.core.pojos.catalogos.CatTipoConexion"/>        
         
         <mapping class="com.cossystem.core.pojos.chat.TblChatBienvenida" />        
         <mapping class="com.cossystem.core.pojos.chat.TblChatDia" />        

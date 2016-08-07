@@ -10,6 +10,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -35,6 +37,7 @@ public class TblEmpresaProyectos implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdEmpresaProyecto")
     private Integer idEmpresaProyecto;
     @Column(name = "Titulo_Proyecto")
@@ -48,7 +51,7 @@ public class TblEmpresaProyectos implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaFinal;
     @Column(name = "IdStatus")
-    private Integer idStatus;
+    private boolean idStatus;
     @Column(name = "IdSemaforo")
     private Integer idSemaforo;
     @Column(name = "Pedir_Referencia")
@@ -108,11 +111,11 @@ public class TblEmpresaProyectos implements Serializable {
         this.fechaFinal = fechaFinal;
     }
 
-    public Integer getIdStatus() {
+    public boolean getIdStatus() {
         return idStatus;
     }
 
-    public void setIdStatus(Integer idStatus) {
+    public void setIdStatus(boolean idStatus) {
         this.idStatus = idStatus;
     }
 

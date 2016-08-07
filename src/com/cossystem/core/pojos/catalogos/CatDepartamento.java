@@ -23,34 +23,37 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author TMXIDSJPINAM
+ * @author JC
  */
 @Entity
-@Table(name = "Cat_Area")
+@Table(name = "Cat_Departamento")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "CatArea.findAll", query = "SELECT c FROM CatArea c")})
-public class CatArea implements Serializable {
+    @NamedQuery(name = "CatDepartamento.findAll", query = "SELECT c FROM CatDepartamento c")})
+public class CatDepartamento implements Serializable {
 
-    private static final long serialVersionUID = 1L;   
+    private static final long serialVersionUID = 1L;    
     @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
     @ManyToOne(fetch = FetchType.LAZY)
-    private TblEmpresa idEmpresa;
+    private TblEmpresa idEmpresa;   
+    @JoinColumn(name = "IdArea", referencedColumnName = "IdArea")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CatArea idArea;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdArea")
-    private Integer idArea;
-    @Column(name = "Area_Descripcion")
-    private String areaDescripcion;
+    @Column(name = "IdDepartamento")
+    private Integer idDepartamento;
+    @Column(name = "Dep_Nombre")
+    private String depNombre;
     @Column(name = "IdStatus")
-    private Boolean idStatus;
+    private boolean idStatus;
 
-    public CatArea() {
+    public CatDepartamento() {
     }
 
-    public CatArea(Integer idArea) {
-        this.idArea = idArea;
+    public CatDepartamento(Integer idDepartamento) {
+        this.idDepartamento = idDepartamento;
     }
 
     public TblEmpresa getIdEmpresa() {
@@ -61,45 +64,53 @@ public class CatArea implements Serializable {
         this.idEmpresa = idEmpresa;
     }
 
-    public Integer getIdArea() {
+    public CatArea getIdArea() {
         return idArea;
     }
 
-    public void setIdArea(Integer idArea) {
+    public void setIdArea(CatArea idArea) {
         this.idArea = idArea;
     }
 
-    public String getAreaDescripcion() {
-        return areaDescripcion;
+    public Integer getIdDepartamento() {
+        return idDepartamento;
     }
 
-    public void setAreaDescripcion(String areaDescripcion) {
-        this.areaDescripcion = areaDescripcion;
+    public void setIdDepartamento(Integer idDepartamento) {
+        this.idDepartamento = idDepartamento;
     }
 
-    public Boolean getIdStatus() {
+    public String getDepNombre() {
+        return depNombre;
+    }
+
+    public void setDepNombre(String depNombre) {
+        this.depNombre = depNombre;
+    }
+
+    public boolean getIdStatus() {
         return idStatus;
     }
 
-    public void setIdStatus(Boolean idStatus) {
+    public void setIdStatus(boolean idStatus) {
         this.idStatus = idStatus;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idArea != null ? idArea.hashCode() : 0);
+        hash += (idDepartamento != null ? idDepartamento.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CatArea)) {
+        if (!(object instanceof CatDepartamento)) {
             return false;
         }
-        CatArea other = (CatArea) object;
-        if ((this.idArea == null && other.idArea != null) || (this.idArea != null && !this.idArea.equals(other.idArea))) {
+        CatDepartamento other = (CatDepartamento) object;
+        if ((this.idDepartamento == null && other.idDepartamento != null) || (this.idDepartamento != null && !this.idDepartamento.equals(other.idDepartamento))) {
             return false;
         }
         return true;
@@ -107,7 +118,7 @@ public class CatArea implements Serializable {
 
     @Override
     public String toString() {
-        return areaDescripcion;
+        return "com.cossystem.core.pojos.catalogos.CatDepartamento[ idDepartamento=" + idDepartamento + " ]";
     }
     
 }

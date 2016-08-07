@@ -5,14 +5,18 @@
  */
 package com.cossystem.core.pojos.empresa;
 
+import com.cossystem.core.pojos.catalogos.CatEmpStatus;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -68,8 +72,9 @@ public class TblEmpresa implements Serializable {
     @Column(name = "Emp_nofonacot")
     private String empnofonacot;
     @Basic(optional = false)
-    @Column(name = "IdStatus")
-    private int idStatus;
+    @JoinColumn(name = "IdStatus", referencedColumnName = "IdEmpStatus")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CatEmpStatus idStatus;
     @OneToMany(mappedBy = "tblEmpresa")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private List<TblEmpresaConfiguracion> tblEmpresaConfiguracionList;
@@ -145,11 +150,6 @@ public class TblEmpresa implements Serializable {
 
     public TblEmpresa(Integer idEmpresa) {
         this.idEmpresa = idEmpresa;
-    }
-
-    public TblEmpresa(Integer idEmpresa, int idStatus) {
-        this.idEmpresa = idEmpresa;
-        this.idStatus = idStatus;
     }
 
     public Integer getIdEmpresa() {
@@ -272,11 +272,11 @@ public class TblEmpresa implements Serializable {
         this.empnofonacot = empnofonacot;
     }
 
-    public int getIdStatus() {
+    public CatEmpStatus getIdStatus() {
         return idStatus;
     }
 
-    public void setIdStatus(int idStatus) {
+    public void setIdStatus(CatEmpStatus idStatus) {
         this.idStatus = idStatus;
     }
 
@@ -509,7 +509,7 @@ public class TblEmpresa implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cossystem.core.pojos.empresa.TblEmpresa[ idEmpresa=" + idEmpresa + " ]";
+        return "TblEmpresa{" + "idEmpresa=" + idEmpresa + ", empAdministrador=" + empAdministrador + ", empRazonSocial=" + empRazonSocial + ", empRFC=" + empRFC + ", empCurp=" + empCurp + ", empTel1=" + empTel1 + ", empTel2=" + empTel2 + ", empFax=" + empFax + ", empUrl=" + empUrl + ", empEmail=" + empEmail + ", empLogo=" + empLogo + ", empimss=" + empimss + ", empinfonavit=" + empinfonavit + ", empfonacot=" + empfonacot + ", empnofonacot=" + empnofonacot + '}';
     }
 
 }

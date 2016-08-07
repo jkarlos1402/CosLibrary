@@ -6,11 +6,14 @@
 package com.cossystem.core.pojos.empleado;
 
 import com.cossystem.core.pojos.catalogos.CatActividadStatus;
+import com.cossystem.core.pojos.empresa.TblEmpresa;
+import com.cossystem.core.pojos.empresa.TblEmpresaProyectos;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,17 +42,20 @@ public class TblEmpleadosDiarioActividadDet implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
-    @Column(name = "IdEmpresa")
-    private int idEmpresa;
-    @Column(name = "IdEmpleado")
-    private Integer idEmpleado;
+    @JoinColumn(name = "IdEmpresa", referencedColumnName = "idEmpresa")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TblEmpresa idEmpresa;    
+    @JoinColumn(name = "IdEmpleado", referencedColumnName = "IdEmpleado")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TblEmpleados idEmpleado;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdActividadDet")
-    private Integer idActividadDet;
-    @Column(name = "IdEmpresaProyecto")
-    private Integer idEmpresaProyecto;
+    private Integer idActividadDet;   
+    @JoinColumn(name = "IdEmpresaProyecto", referencedColumnName = "IdEmpresaProyecto")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TblEmpresaProyectos idEmpresaProyecto;
     @Column(name = "FECHA_CAPTURA")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaCaptura;
@@ -73,19 +79,19 @@ public class TblEmpleadosDiarioActividadDet implements Serializable {
     @ManyToOne(optional = false)
     private TblEmpleadosDiarioActividad idActividad;    
 
-    public int getIdEmpresa() {
+    public TblEmpresa getIdEmpresa() {
         return idEmpresa;
     }
 
-    public void setIdEmpresa(int idEmpresa) {
+    public void setIdEmpresa(TblEmpresa idEmpresa) {
         this.idEmpresa = idEmpresa;
     }
 
-    public Integer getIdEmpleado() {
+    public TblEmpleados getIdEmpleado() {
         return idEmpleado;
     }
 
-    public void setIdEmpleado(Integer idEmpleado) {
+    public void setIdEmpleado(TblEmpleados idEmpleado) {
         this.idEmpleado = idEmpleado;
     }
 
@@ -97,11 +103,11 @@ public class TblEmpleadosDiarioActividadDet implements Serializable {
         this.idActividadDet = idActividadDet;
     }
 
-    public Integer getIdEmpresaProyecto() {
+    public TblEmpresaProyectos getIdEmpresaProyecto() {
         return idEmpresaProyecto;
     }
 
-    public void setIdEmpresaProyecto(Integer idEmpresaProyecto) {
+    public void setIdEmpresaProyecto(TblEmpresaProyectos idEmpresaProyecto) {
         this.idEmpresaProyecto = idEmpresaProyecto;
     }
 
