@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CatTipoConexion.findAll", query = "SELECT c FROM CatTipoConexion c")})
 public class CatTipoConexion implements Serializable {
 
-    private static final long serialVersionUID = 1L;   
+//    private static final long serialVersionUID = 1L;   
     @JoinColumn(name = "IdEmpresa", referencedColumnName = "idEmpresa")
     @ManyToOne
     private TblEmpresa idEmpresa;

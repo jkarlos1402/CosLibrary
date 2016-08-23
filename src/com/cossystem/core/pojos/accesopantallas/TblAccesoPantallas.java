@@ -34,7 +34,7 @@ import org.hibernate.annotations.CascadeType;
     @NamedQuery(name = "TblAccesoPantallas.findAll", query = "SELECT t FROM TblAccesoPantallas t")})
 public class TblAccesoPantallas implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

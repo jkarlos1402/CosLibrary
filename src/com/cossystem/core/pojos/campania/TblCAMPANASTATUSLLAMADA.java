@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TblCAMPANASTATUSLLAMADA.findAll", query = "SELECT t FROM TblCAMPANASTATUSLLAMADA t")})
 public class TblCAMPANASTATUSLLAMADA implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Column(name = "IDEMPRESA")
     private Integer idempresa;
     @Id

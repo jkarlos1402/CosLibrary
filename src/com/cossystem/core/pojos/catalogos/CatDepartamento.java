@@ -5,8 +5,10 @@
  */
 package com.cossystem.core.pojos.catalogos;
 
+import com.cossystem.core.pojos.empleado.TblEmpleadosFotos;
 import com.cossystem.core.pojos.empresa.TblEmpresa;
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,8 +20,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 /**
  *
@@ -32,10 +38,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CatDepartamento.findAll", query = "SELECT c FROM CatDepartamento c")})
 public class CatDepartamento implements Serializable {
 
-    private static final long serialVersionUID = 1L;    
+//    private static final long serialVersionUID = 1L;
     @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
     @ManyToOne(fetch = FetchType.LAZY)
-    private TblEmpresa idEmpresa;   
+    private TblEmpresa idEmpresa;
     @JoinColumn(name = "IdArea", referencedColumnName = "IdArea")
     @ManyToOne(fetch = FetchType.LAZY)
     private CatArea idArea;
@@ -47,7 +53,13 @@ public class CatDepartamento implements Serializable {
     @Column(name = "Dep_Nombre")
     private String depNombre;
     @Column(name = "IdStatus")
-    private boolean idStatus;
+    private Boolean idStatus;
+
+    @OneToMany(mappedBy = "idDepartamento",fetch = FetchType.LAZY)    
+    private List<CatCECO> cecoList;
+
+    @OneToMany(mappedBy = "idDepartamento",fetch = FetchType.LAZY)
+    private List<CatEmpPuestos> puestosList;
 
     public CatDepartamento() {
     }
@@ -88,12 +100,31 @@ public class CatDepartamento implements Serializable {
         this.depNombre = depNombre;
     }
 
-    public boolean getIdStatus() {
+    public Boolean getIdStatus() {
         return idStatus;
     }
 
-    public void setIdStatus(boolean idStatus) {
+    public void setIdStatus(Boolean idStatus) {
         this.idStatus = idStatus;
+    }
+
+    @XmlTransient
+    public List<CatCECO> getCecoList() {
+        System.out.println("entro a obtener ceco");
+        return cecoList;
+    }
+
+    public void setCecoList(List<CatCECO> cecoList) {
+        this.cecoList = cecoList;
+    }
+
+    @XmlTransient
+    public List<CatEmpPuestos> getPuestosList() {
+        return puestosList;
+    }
+
+    public void setPuestosList(List<CatEmpPuestos> puestosList) {
+        this.puestosList = puestosList;
     }
 
     @Override
@@ -120,5 +151,5 @@ public class CatDepartamento implements Serializable {
     public String toString() {
         return "com.cossystem.core.pojos.catalogos.CatDepartamento[ idDepartamento=" + idDepartamento + " ]";
     }
-    
+
 }

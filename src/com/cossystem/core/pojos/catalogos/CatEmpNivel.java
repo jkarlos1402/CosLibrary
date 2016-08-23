@@ -32,9 +32,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CatEmpNivel.findAll", query = "SELECT c FROM CatEmpNivel c")})
 public class CatEmpNivel implements Serializable {
 
-    private static final long serialVersionUID = 1L;   
+//    private static final long serialVersionUID = 1L;   
     @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private TblEmpresa idEmpresa;
     @Id
     @Basic(optional = false)

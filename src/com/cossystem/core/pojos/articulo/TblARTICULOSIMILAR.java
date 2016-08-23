@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TblARTICULOSIMILAR.findAll", query = "SELECT t FROM TblARTICULOSIMILAR t")})
 public class TblARTICULOSIMILAR implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Column(name = "IdEmpresa")
     private Integer idEmpresa;
     @Id

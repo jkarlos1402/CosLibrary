@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TblEmpresaProyectos.findAll", query = "SELECT t FROM TblEmpresaProyectos t")})
 public class TblEmpresaProyectos implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +51,7 @@ public class TblEmpresaProyectos implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaFinal;
     @Column(name = "IdStatus")
-    private boolean idStatus;
+    private Boolean idStatus;
     @Column(name = "IdSemaforo")
     private Integer idSemaforo;
     @Column(name = "Pedir_Referencia")
@@ -111,11 +111,11 @@ public class TblEmpresaProyectos implements Serializable {
         this.fechaFinal = fechaFinal;
     }
 
-    public boolean getIdStatus() {
+    public Boolean getIdStatus() {
         return idStatus;
     }
 
-    public void setIdStatus(boolean idStatus) {
+    public void setIdStatus(Boolean idStatus) {
         this.idStatus = idStatus;
     }
 

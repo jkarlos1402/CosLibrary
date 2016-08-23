@@ -32,14 +32,14 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CatEmpStatus.findAll", query = "SELECT c FROM CatEmpStatus c")})
 public class CatEmpStatus implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdEmpStatus")
     private Integer idEmpStatus;
     @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private TblEmpresa idEmpresa;
     @Column(name = "IdStatus")
     private Integer idStatus;

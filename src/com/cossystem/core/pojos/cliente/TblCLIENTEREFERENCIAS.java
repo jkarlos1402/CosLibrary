@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TblCLIENTEREFERENCIAS.findAll", query = "SELECT t FROM TblCLIENTEREFERENCIAS t")})
 public class TblCLIENTEREFERENCIAS implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @Column(name = "IDEMPRESA")
     private int idempresa;

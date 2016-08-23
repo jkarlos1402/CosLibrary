@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "CatCPTITULOESTADISTICA.findAll", query = "SELECT c FROM CatCPTITULOESTADISTICA c")})
 public class CatCPTITULOESTADISTICA implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "IdTitulo")

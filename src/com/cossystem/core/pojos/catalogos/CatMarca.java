@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CatMarca.findAll", query = "SELECT c FROM CatMarca c")})
 public class CatMarca implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Column(name = "idEmpresa")
     private Integer idEmpresa;
     @Id

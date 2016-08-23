@@ -32,9 +32,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CatUbicacion.findAll", query = "SELECT c FROM CatUbicacion c")})
 public class CatUbicacion implements Serializable {
 
-    private static final long serialVersionUID = 1L;   
+//    private static final long serialVersionUID = 1L;   
     @JoinColumn(name = "IdEmpresa", referencedColumnName = "idEmpresa")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private TblEmpresa idEmpresa;
     @Id
     @Basic(optional = false)
@@ -44,7 +44,7 @@ public class CatUbicacion implements Serializable {
     @Column(name = "Descripcion")
     private String descripcion;
     @Column(name = "IdStatus")
-    private boolean idStatus;
+    private Boolean idStatus;
 
     public CatUbicacion() {
     }
@@ -77,11 +77,11 @@ public class CatUbicacion implements Serializable {
         this.descripcion = descripcion;
     }
 
-    public boolean getIdStatus() {
+    public Boolean getIdStatus() {
         return idStatus;
     }
 
-    public void setIdStatus(boolean idStatus) {
+    public void setIdStatus(Boolean idStatus) {
         this.idStatus = idStatus;
     }
 

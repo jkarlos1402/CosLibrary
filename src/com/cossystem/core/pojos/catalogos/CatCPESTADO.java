@@ -41,7 +41,7 @@ import org.hibernate.annotations.CascadeType;
     @NamedQuery(name = "CatCPESTADO.findAll", query = "SELECT c FROM CatCPESTADO c")})
 public class CatCPESTADO implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,19 +65,19 @@ public class CatCPESTADO implements Serializable {
     @JoinColumn(name = "IdRegionGeografica", referencedColumnName = "IdRegionGeografica")
     @ManyToOne    
     private CatRegionGeografica idRegionGeografica;
-    @OneToMany(mappedBy = "catCPESTADO",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "catCPESTADO")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private List<CatCPDELEGACION> catCPDELEGACIONList;
-    @OneToMany(mappedBy = "idEstado",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "idEstado")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private List<CatCPTITULOESTADISTICADET> catCPTITULOESTADISTICADETList;
-    @OneToMany(mappedBy = "idEstado",fetch = FetchType.LAZY)    
+    @OneToMany(mappedBy = "idEstado")    
     private List<TblEmpresaReportes> tblEmpresaReportesList;
-    @OneToMany(mappedBy = "idEstado",fetch = FetchType.LAZY)    
+    @OneToMany(mappedBy = "idEstado")    
     private List<TblEmpresaDirEntrega> tblEmpresaDirEntregaList;
-    @OneToMany(mappedBy = "idEstado",fetch = FetchType.LAZY)   
+    @OneToMany(mappedBy = "idEstado")   
     private List<TblEmpresaLugarExpedicion> tblEmpresaLugarExpedicionList;
-    @OneToMany(mappedBy = "idEstado",fetch = FetchType.LAZY)    
+    @OneToMany(mappedBy = "idEstado")    
     private List<TblEmpresaFiscal> tblEmpresaFiscalList;
 
     public Integer getIdEstado() {

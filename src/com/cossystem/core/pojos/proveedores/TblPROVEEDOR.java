@@ -36,7 +36,7 @@ import org.hibernate.annotations.CascadeType;
     @NamedQuery(name = "TblPROVEEDOR.findAll", query = "SELECT t FROM TblPROVEEDOR t")})
 public class TblPROVEEDOR implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

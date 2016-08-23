@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TblEmpresaInformacionAdicional.findAll", query = "SELECT t FROM TblEmpresaInformacionAdicional t")})
 public class TblEmpresaInformacionAdicional implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

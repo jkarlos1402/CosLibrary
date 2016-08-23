@@ -5,6 +5,9 @@ import com.cossystem.core.exception.DataBaseException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import org.hibernate.CacheMode;
+import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectDeletedException;
 import org.hibernate.Query;
@@ -12,6 +15,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.TypeMismatchException;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.transform.Transformers;
 
@@ -19,7 +23,7 @@ public class GenericDAO {
 
     private final HibernateUtil hibernateUtil;
     private final SessionFactory sessionFactory;
-    private final Session session;
+    private Session session;
     private Transaction tx;
 
     public GenericDAO() throws DataBaseException {
@@ -32,10 +36,16 @@ public class GenericDAO {
         return session;
     }
 
+    public void renovarDAO() {
+        session = sessionFactory.getCurrentSession();
+    }
+
     public void closeDAO() {
         if (session != null && sessionFactory != null) {
-            session.clear();
-            session.close();
+//            session.clear();
+            if (session.isOpen()) {
+                session.close();
+            }
             sessionFactory.close();
         }
     }
@@ -43,11 +53,11 @@ public class GenericDAO {
     public <T, O extends Serializable> T findById(final Class clase, O id) throws DAOException {
         T elemento = null;
         try {
+            session.beginTransaction();
             elemento = (T) session.get(clase, id);
+            session.getTransaction().commit();
         } catch (TypeMismatchException e) {
             throw new DAOException("Error, parámetros incompatibles: " + e.getMessage());
-        } finally {
-            session.flush();
         }
         return elemento;
     }
@@ -59,6 +69,7 @@ public class GenericDAO {
             query = session.createQuery("FROM " + clase.getName() + " c");
             elementos = query.list();
         } catch (HibernateException e) {
+            e.printStackTrace();
             throw new DAOException("Error no identificado: " + e.getMessage());
         } finally {
             session.flush();
@@ -155,6 +166,17 @@ public class GenericDAO {
         }
     }
 
+    public <T extends Serializable> void refresh(final T instance) throws DAOException {
+        try {
+            session.merge(instance);
+        } catch (HibernateException | IllegalArgumentException e) {
+            String message;
+            message = e.getMessage();
+            e.printStackTrace();
+            throw new DAOException("Error al refrescar la entidad: " + message);
+        }
+    }
+
     public <T extends Serializable> void saveOrUpdateAll(final List<T> instances) throws DAOException {
         try {
             tx = session.beginTransaction();
@@ -201,11 +223,11 @@ public class GenericDAO {
                 }
             }
         } catch (HibernateException e) {
-            throw new DAOException("Error no identificado: " + e.getMessage());
+            throw new DAOException(e.getMessage());
         } catch (IllegalArgumentException e2) {
-            throw new DAOException("Error no identificado: " + e2.getMessage());
+            throw new DAOException(e2.getMessage());
         } catch (Exception e2) {
-            throw new DAOException("Error no identificado: " + e2.getMessage());
+            throw new DAOException(e2.getMessage());
         } finally {
             session.flush();
         }
@@ -216,32 +238,20 @@ public class GenericDAO {
             final Class clase,
             final Map<String, Object> componentes) throws DAOException {
         List<T> elementos = null;
-        Query queryHql;
-        String query = "SELECT c FROM " + clase.getName() + " c ";
+        Criteria criteria = session.createCriteria(clase);
         try {
             if (componentes != null && !componentes.keySet().isEmpty()) {
-                query += "WHERE ";
                 for (String componente : componentes.keySet()) {
-                    query += " and c." + componente + " = :valor" + componente;
-                }
-                query = query.replaceFirst(" and ", "");
-            }
-            queryHql = session.createQuery(query);
-            if (componentes != null && !componentes.keySet().isEmpty()) {
-                for (String componente : componentes.keySet()) {
-                    System.out.println("componente: " + componente);
-                    System.out.println("valor: " + componentes.get(componente));
-                    queryHql.setParameter("valor" + componente, componentes.get(componente));
+                    criteria.add(Restrictions.eq(componente, componentes.get(componente)));
                 }
             }
-            elementos = queryHql.list();
+            elementos = criteria.list();
             if (elementos != null && !elementos.isEmpty()) {
                 return elementos;
             }
         } catch (HibernateException e) {
+            e.printStackTrace();
             throw new DAOException(e.getCause().getMessage());
-        } finally {
-            session.flush();
         }
         return elementos;
     }

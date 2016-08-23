@@ -11,8 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -26,37 +24,38 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author JC
  */
 @Entity
-@Table(name = "Cat_EmpPuestos")
+@Table(name = "Cat_CECO")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "CatEmpPuestos.findAll", query = "SELECT c FROM CatEmpPuestos c")})
-public class CatEmpPuestos implements Serializable {
+    @NamedQuery(name = "CatCECO.findAll", query = "SELECT c FROM CatCECO c")})
+public class CatCECO implements Serializable {
 
 //    private static final long serialVersionUID = 1L;
     @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
     @ManyToOne
-    private TblEmpresa idEmpresa;
+    private TblEmpresa idEmpresa;    
     @JoinColumn(name = "IdArea", referencedColumnName = "IdArea")
     @ManyToOne
-    private CatArea idArea;
+    private CatArea idArea;    
     @JoinColumn(name = "IdDepartamento", referencedColumnName = "IdDepartamento")
     @ManyToOne
     private CatDepartamento idDepartamento;
     @Id
     @Basic(optional = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdPuesto")
-    private Integer idPuesto;
-    @Column(name = "Puesto_Nombre")
-    private String puestoNombre;
+    @Column(name = "IdCentroCostos")
+    private Integer idCentroCostos;
+    @Column(name = "CentroCostos_Codigo")
+    private String centroCostosCodigo;
+    @Column(name = "CentroCostos_Nombre")
+    private String centroCostosNombre;
     @Column(name = "IdStatus")
     private Boolean idStatus;
 
-    public CatEmpPuestos() {
+    public CatCECO() {
     }
 
-    public CatEmpPuestos(Integer idPuesto) {
-        this.idPuesto = idPuesto;
+    public CatCECO(Integer idCentroCostos) {
+        this.idCentroCostos = idCentroCostos;
     }
 
     public TblEmpresa getIdEmpresa() {
@@ -83,20 +82,28 @@ public class CatEmpPuestos implements Serializable {
         this.idDepartamento = idDepartamento;
     }
 
-    public Integer getIdPuesto() {
-        return idPuesto;
+    public Integer getIdCentroCostos() {
+        return idCentroCostos;
     }
 
-    public void setIdPuesto(Integer idPuesto) {
-        this.idPuesto = idPuesto;
+    public void setIdCentroCostos(Integer idCentroCostos) {
+        this.idCentroCostos = idCentroCostos;
     }
 
-    public String getPuestoNombre() {
-        return puestoNombre;
+    public String getCentroCostosCodigo() {
+        return centroCostosCodigo;
     }
 
-    public void setPuestoNombre(String puestoNombre) {
-        this.puestoNombre = puestoNombre;
+    public void setCentroCostosCodigo(String centroCostosCodigo) {
+        this.centroCostosCodigo = centroCostosCodigo;
+    }
+
+    public String getCentroCostosNombre() {
+        return centroCostosNombre;
+    }
+
+    public void setCentroCostosNombre(String centroCostosNombre) {
+        this.centroCostosNombre = centroCostosNombre;
     }
 
     public Boolean getIdStatus() {
@@ -110,18 +117,18 @@ public class CatEmpPuestos implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idPuesto != null ? idPuesto.hashCode() : 0);
+        hash += (idCentroCostos != null ? idCentroCostos.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CatEmpPuestos)) {
+        if (!(object instanceof CatCECO)) {
             return false;
         }
-        CatEmpPuestos other = (CatEmpPuestos) object;
-        if ((this.idPuesto == null && other.idPuesto != null) || (this.idPuesto != null && !this.idPuesto.equals(other.idPuesto))) {
+        CatCECO other = (CatCECO) object;
+        if ((this.idCentroCostos == null && other.idCentroCostos != null) || (this.idCentroCostos != null && !this.idCentroCostos.equals(other.idCentroCostos))) {
             return false;
         }
         return true;
@@ -129,7 +136,7 @@ public class CatEmpPuestos implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cossystem.core.pojos.catalogos.CatEmpPuestos[ idPuesto=" + idPuesto + " ]";
+        return "com.cossystem.core.pojos.catalogos.CatCECO[ idCentroCostos=" + idCentroCostos + " ]";
     }
     
 }

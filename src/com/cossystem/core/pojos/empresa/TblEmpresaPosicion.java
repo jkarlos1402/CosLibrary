@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TblEmpresaPosicion.findAll", query = "SELECT t FROM TblEmpresaPosicion t")})
 public class TblEmpresaPosicion implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +46,7 @@ public class TblEmpresaPosicion implements Serializable {
     private Integer idStatus;
     @JoinColumn(name = "IdEmpresa", referencedColumnName = "idEmpresa", insertable = false, updatable = false)
     @ManyToOne(optional = false)
-    private TblEmpresa tblEmpresa;
+    private TblEmpresa idEmpresa;
 
     public TblEmpresaPosicion() {
     }
@@ -85,18 +85,18 @@ public class TblEmpresaPosicion implements Serializable {
 
     @XmlTransient
     public TblEmpresa getTblEmpresa() {
-        return tblEmpresa;
+        return idEmpresa;
     }
 
-    public void setTblEmpresa(TblEmpresa tblEmpresa) {
-        this.tblEmpresa = tblEmpresa;
+    public void setTblEmpresa(TblEmpresa idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 23 * hash + this.idPosicion;
-        hash = 23 * hash + Objects.hashCode(this.tblEmpresa);
+        hash = 23 * hash + Objects.hashCode(this.idEmpresa);
         return hash;
     }
 
@@ -115,7 +115,7 @@ public class TblEmpresaPosicion implements Serializable {
         if (this.idPosicion != other.idPosicion) {
             return false;
         }
-        if (!Objects.equals(this.tblEmpresa, other.tblEmpresa)) {
+        if (!Objects.equals(this.idEmpresa, other.idEmpresa)) {
             return false;
         }
         return true;
@@ -123,7 +123,7 @@ public class TblEmpresaPosicion implements Serializable {
 
     @Override
     public String toString() {
-        return "TblEmpresaPosicion{" + "idPosicion=" + idPosicion + ", numPosicion=" + numPosicion + ", nombrePosicion=" + nombrePosicion + ", idStatus=" + idStatus + ", tblEmpresa=" + tblEmpresa + '}';
+        return "TblEmpresaPosicion{" + "idPosicion=" + idPosicion + ", numPosicion=" + numPosicion + ", nombrePosicion=" + nombrePosicion + ", idStatus=" + idStatus + '}';
     }
 
 }

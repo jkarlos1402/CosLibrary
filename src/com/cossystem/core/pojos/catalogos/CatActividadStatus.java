@@ -5,9 +5,7 @@
  */
 package com.cossystem.core.pojos.catalogos;
 
-import com.cossystem.core.pojos.empleado.TblEmpleadosDiarioActividadDet;
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,10 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -32,7 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "CatActividadStatus.findAll", query = "SELECT c FROM CatActividadStatus c")})
 public class CatActividadStatus implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Column(name = "idEmpresa")
     private Integer idEmpresa;
     @Id

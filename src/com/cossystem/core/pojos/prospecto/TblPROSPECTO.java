@@ -41,7 +41,7 @@ import org.hibernate.annotations.CascadeType;
     @NamedQuery(name = "TblPROSPECTO.findAll", query = "SELECT t FROM TblPROSPECTO t")})
 public class TblPROSPECTO implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

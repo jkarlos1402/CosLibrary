@@ -37,7 +37,7 @@ import org.hibernate.annotations.CascadeType;
     @NamedQuery(name = "TblEmpresa.findAll", query = "SELECT t FROM TblEmpresa t")})
 public class TblEmpresa implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,13 +72,12 @@ public class TblEmpresa implements Serializable {
     @Column(name = "Emp_nofonacot")
     private String empnofonacot;
     @Basic(optional = false)
-    @JoinColumn(name = "IdStatus", referencedColumnName = "IdEmpStatus")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CatEmpStatus idStatus;
+    @Column(name = "IdStatus")
+    private Boolean idStatus;
     @OneToMany(mappedBy = "tblEmpresa")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private List<TblEmpresaConfiguracion> tblEmpresaConfiguracionList;
-    @OneToMany(mappedBy = "tblEmpresa")
+    @OneToMany(mappedBy = "idEmpresa")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private List<TblEmpresaPosicion> tblEmpresaPosicionList;
     @OneToMany(mappedBy = "tblEmpresa")
@@ -272,11 +271,11 @@ public class TblEmpresa implements Serializable {
         this.empnofonacot = empnofonacot;
     }
 
-    public CatEmpStatus getIdStatus() {
+    public Boolean getIdStatus() {
         return idStatus;
     }
 
-    public void setIdStatus(CatEmpStatus idStatus) {
+    public void setIdStatus(Boolean idStatus) {
         this.idStatus = idStatus;
     }
 

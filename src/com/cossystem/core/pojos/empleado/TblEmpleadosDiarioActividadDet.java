@@ -40,7 +40,7 @@ import org.hibernate.annotations.CascadeType;
     @NamedQuery(name = "TblEmpleadosDiarioActividadDet.findAll", query = "SELECT t FROM TblEmpleadosDiarioActividadDet t")})
 public class TblEmpleadosDiarioActividadDet implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @JoinColumn(name = "IdEmpresa", referencedColumnName = "idEmpresa")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -76,7 +76,7 @@ public class TblEmpleadosDiarioActividadDet implements Serializable {
     @Cascade({CascadeType.SAVE_UPDATE})
     private CatActividadStatus idStatus;
     @JoinColumn(name = "IdActividad", referencedColumnName = "IdActividad")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     private TblEmpleadosDiarioActividad idActividad;    
 
     public TblEmpresa getIdEmpresa() {

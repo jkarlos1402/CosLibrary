@@ -10,7 +10,6 @@ import com.cossystem.core.pojos.empresa.TblEmpresa;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,6 +26,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 /**
  *
@@ -38,18 +39,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "CatUsuarios.findAll", query = "SELECT c FROM CatUsuarios c")})
 public class CatUsuarios implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+    
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdUsuario")
     private Integer idUsuario;
     @JoinColumn(name = "IdEmpresa", referencedColumnName = "idEmpresa")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)    
     private TblEmpresa idEmpresa;
     @JoinColumn(name = "IdEmpleado", referencedColumnName = "IdEmpleado")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST})
     private TblEmpleados idEmpleado;
     @Column(name = "CLAVE_EMPLEADO")
     private String claveEmpleado;

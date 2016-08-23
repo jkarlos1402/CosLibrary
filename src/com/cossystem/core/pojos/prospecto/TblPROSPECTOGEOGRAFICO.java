@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TblPROSPECTOGEOGRAFICO.findAll", query = "SELECT t FROM TblPROSPECTOGEOGRAFICO t")})
 public class TblPROSPECTOGEOGRAFICO implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

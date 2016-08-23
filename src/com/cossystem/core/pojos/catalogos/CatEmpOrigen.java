@@ -32,9 +32,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CatEmpOrigen.findAll", query = "SELECT c FROM CatEmpOrigen c")})
 public class CatEmpOrigen implements Serializable {
 
-    private static final long serialVersionUID = 1L;   
+//    private static final long serialVersionUID = 1L;
     @JoinColumn(name = "idempresa", referencedColumnName = "idEmpresa")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private TblEmpresa idempresa;
     @Id
     @Basic(optional = false)
@@ -137,7 +137,7 @@ public class CatEmpOrigen implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cossystem.core.pojos.catalogos.CatEmpOrigen[ idEmpOrigen=" + idEmpOrigen + " ]";
+        return "CatEmpOrigen{" + "idEmpOrigen=" + idEmpOrigen + ", empOrigenDescripcion=" + empOrigenDescripcion + ", numIni=" + numIni + ", empOrigenPosicion=" + empOrigenPosicion + ", empOrigenClaveEmpleado=" + empOrigenClaveEmpleado + ", empOrigenConsecutivo=" + empOrigenConsecutivo + '}';
     }
-    
+
 }

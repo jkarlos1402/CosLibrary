@@ -6,15 +6,18 @@
 package com.cossystem.core.pojos.empleado;
 
 import com.cossystem.core.pojos.catalogos.CatArea;
+import com.cossystem.core.pojos.catalogos.CatCECO;
 import com.cossystem.core.pojos.catalogos.CatCPESTADO;
 import com.cossystem.core.pojos.catalogos.CatDepartamento;
 import com.cossystem.core.pojos.catalogos.CatEmpNivel;
 import com.cossystem.core.pojos.catalogos.CatEmpOrigen;
 import com.cossystem.core.pojos.catalogos.CatEmpPuestos;
 import com.cossystem.core.pojos.catalogos.CatSexo;
+import com.cossystem.core.pojos.catalogos.CatStatus;
 import com.cossystem.core.pojos.catalogos.CatTipoConexion;
 import com.cossystem.core.pojos.catalogos.CatUbicacion;
 import com.cossystem.core.pojos.empresa.TblEmpresa;
+import com.cossystem.core.pojos.empresa.TblEmpresaPosicion;
 import com.cossystem.core.pojos.empresa.TblEmpresaProyectos;
 import java.io.Serializable;
 import java.util.Date;
@@ -50,10 +53,10 @@ import org.hibernate.annotations.CascadeType;
     @NamedQuery(name = "TblEmpleados.findAll", query = "SELECT t FROM TblEmpleados t")})
 public class TblEmpleados implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Basic(optional = false)    
+//    private static final long serialVersionUID = 1L;
+    @Basic(optional = false)
     @JoinColumn(name = "IdEmpresa", referencedColumnName = "idEmpresa")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private TblEmpresa idEmpresa;
     @Id
     @Basic(optional = false)
@@ -64,36 +67,40 @@ public class TblEmpleados implements Serializable {
     @Column(name = "CLAVE_EMPLEADO")
     private String claveEmpleado;
     @JoinColumn(name = "IdEmpleadoOrigen", referencedColumnName = "IdEmpOrigen")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private CatEmpOrigen idEmpleadoOrigen;
     @JoinColumn(name = "IdArea", referencedColumnName = "IdArea")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private CatArea idArea;
     @JoinColumn(name = "IdDepartamento", referencedColumnName = "IdDepartamento")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private CatDepartamento idDepartamento;
     @JoinColumn(name = "IdUbicacion", referencedColumnName = "IdUbicacion")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private CatUbicacion idUbicacion;
     @JoinColumn(name = "IdPuesto", referencedColumnName = "IdPuesto")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CatEmpPuestos idPuesto;   
+    @ManyToOne(fetch = FetchType.EAGER)
+    private CatEmpPuestos idPuesto;
     @JoinColumn(name = "IdNivel", referencedColumnName = "IdNivel")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CatEmpNivel idNivel; 
+    @ManyToOne(fetch = FetchType.EAGER)
+    private CatEmpNivel idNivel;
     @JoinColumn(name = "IdSexo", referencedColumnName = "IdSexo")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private CatSexo idSexo;
-    @Column(name = "IdCentroCostos")
-    private Integer idCentroCostos;
-    @Column(name = "IDSTATUS")
-    private boolean idstatus;
+    @JoinColumn(name = "IdCentroCostos", referencedColumnName = "IdCentroCostos")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private CatCECO idCentroCostos;
+    @JoinColumn(name = "IDSTATUS", referencedColumnName = "IdStatus")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private CatStatus idstatus;
     @Column(name = "NOMBRE")
-    private String nombre;
-    @Column(name = "POSICION_ACTUAL")
-    private Integer posicionActual;
-    @Column(name = "POSICION_REPORTA_A")
-    private Integer posicionReportaA;
+    private String nombre;   
+    @JoinColumn(name = "POSICION_ACTUAL", referencedColumnName = "IdPosicion")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private TblEmpresaPosicion posicionActual;
+    @JoinColumn(name = "POSICION_REPORTA_A", referencedColumnName = "IdPosicion")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private TblEmpresaPosicion posicionReportaA;
     @Column(name = "FECHA_INGRESO")
     @Temporal(TemporalType.DATE)
     private Date fechaIngreso;
@@ -107,9 +114,9 @@ public class TblEmpleados implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date fechaNacimiento;
     @Column(name = "EMAIL")
-    private String email;   
+    private String email;
     @JoinColumn(name = "IdEmpleado_Contacto", referencedColumnName = "IdEmpleado")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private TblEmpleados idEmpleadoContacto;
     @Column(name = "TELEFONO")
     private String telefono;
@@ -125,18 +132,19 @@ public class TblEmpleados implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date actividadFecha;
     @JoinColumn(name = "IdActividad", referencedColumnName = "IdActividad")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TblEmpleadosDiarioActividad idActividad;    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.REFRESH,CascadeType.PERSIST})
+    private TblEmpleadosDiarioActividad idActividad;
     @JoinColumn(name = "IdActividadDet", referencedColumnName = "IdActividadDet")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private TblEmpleadosDiarioActividadDet idActividadDet;
     @Column(name = "IdTicketReasignar")
-    private Integer idTicketReasignar;    
+    private Boolean idTicketReasignar;
     @JoinColumn(name = "IdEstado", referencedColumnName = "IdEstado")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CatCPESTADO idEstado;  
+    @ManyToOne(fetch = FetchType.EAGER)
+    private CatCPESTADO idEstado;
     @JoinColumn(name = "IdTipoConexion", referencedColumnName = "IdTipoConexion")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private CatTipoConexion idTipoConexion;
     @Column(name = "Fecha_Conexion")
     @Temporal(TemporalType.TIMESTAMP)
@@ -148,9 +156,11 @@ public class TblEmpleados implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaActualizacion;
     @Column(name = "Edad")
-    private Integer edad;    
+    private Integer edad;
+    @Column(name = "Contacto")
+    private Boolean contacto;
     @JoinColumn(name = "IdEmpresaProyecto", referencedColumnName = "IdEmpresaProyecto")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private TblEmpresaProyectos idEmpresaProyecto;
     @OneToMany(mappedBy = "idEmpleado")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
@@ -306,19 +316,19 @@ public class TblEmpleados implements Serializable {
         this.idSexo = idSexo;
     }
 
-    public Integer getIdCentroCostos() {
+    public CatCECO getIdCentroCostos() {
         return idCentroCostos;
     }
 
-    public void setIdCentroCostos(Integer idCentroCostos) {
+    public void setIdCentroCostos(CatCECO idCentroCostos) {
         this.idCentroCostos = idCentroCostos;
     }
 
-    public boolean getIdstatus() {
+    public CatStatus getIdstatus() {
         return idstatus;
     }
 
-    public void setIdstatus(boolean idstatus) {
+    public void setIdstatus(CatStatus idstatus) {
         this.idstatus = idstatus;
     }
 
@@ -330,19 +340,19 @@ public class TblEmpleados implements Serializable {
         this.nombre = nombre;
     }
 
-    public Integer getPosicionActual() {
+    public TblEmpresaPosicion getPosicionActual() {
         return posicionActual;
     }
 
-    public void setPosicionActual(Integer posicionActual) {
+    public void setPosicionActual(TblEmpresaPosicion posicionActual) {
         this.posicionActual = posicionActual;
     }
 
-    public Integer getPosicionReportaA() {
+    public TblEmpresaPosicion getPosicionReportaA() {
         return posicionReportaA;
     }
 
-    public void setPosicionReportaA(Integer posicionReportaA) {
+    public void setPosicionReportaA(TblEmpresaPosicion posicionReportaA) {
         this.posicionReportaA = posicionReportaA;
     }
 
@@ -466,11 +476,11 @@ public class TblEmpleados implements Serializable {
         this.idActividadDet = idActividadDet;
     }
 
-    public Integer getIdTicketReasignar() {
+    public Boolean getIdTicketReasignar() {
         return idTicketReasignar;
     }
 
-    public void setIdTicketReasignar(Integer idTicketReasignar) {
+    public void setIdTicketReasignar(Boolean idTicketReasignar) {
         this.idTicketReasignar = idTicketReasignar;
     }
 
@@ -520,6 +530,14 @@ public class TblEmpleados implements Serializable {
 
     public void setEdad(Integer edad) {
         this.edad = edad;
+    }
+
+    public Boolean getContacto() {
+        return contacto;
+    }
+
+    public void setContacto(Boolean contacto) {
+        this.contacto = contacto;
     }
 
     public TblEmpresaProyectos getIdEmpresaProyecto() {
@@ -741,7 +759,7 @@ public class TblEmpleados implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cossystem.core.pojos.empleado.TblEmpleados[ idEmpleado=" + idEmpleado + " ]";
+        return "TblEmpleados{" + "idEmpleado=" + idEmpleado + ", claveEmpleado=" + claveEmpleado + ", idArea=" + idArea + ", nombre=" + nombre + '}';
     }
 
 }

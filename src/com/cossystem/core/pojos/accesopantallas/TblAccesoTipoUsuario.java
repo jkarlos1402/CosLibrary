@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TblAccesoTipoUsuario.findAll", query = "SELECT t FROM TblAccesoTipoUsuario t")})
 public class TblAccesoTipoUsuario implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
 
     @Basic(optional = false)
     @Column(name = "IdEmpresa")
@@ -49,7 +49,7 @@ public class TblAccesoTipoUsuario implements Serializable {
     private String tipoUsuario;
     @Basic(optional = false)
     @Column(name = "Estatus")
-    private boolean estatus;
+    private Boolean estatus;
     @Basic(optional = false)
     @Column(name = "FechaAlta")
     @Temporal(TemporalType.TIMESTAMP)
@@ -81,11 +81,11 @@ public class TblAccesoTipoUsuario implements Serializable {
         this.tipoUsuario = tipoUsuario;
     }
 
-    public boolean getEstatus() {
+    public Boolean getEstatus() {
         return estatus;
     }
 
-    public void setEstatus(boolean estatus) {
+    public void setEstatus(Boolean estatus) {
         this.estatus = estatus;
     }
 

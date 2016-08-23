@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TblCLIENTEGEOGRAFICO.findAll", query = "SELECT t FROM TblCLIENTEGEOGRAFICO t")})
 public class TblCLIENTEGEOGRAFICO implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

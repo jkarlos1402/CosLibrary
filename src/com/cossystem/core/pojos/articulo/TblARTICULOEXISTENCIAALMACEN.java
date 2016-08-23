@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TblARTICULOEXISTENCIAALMACEN.findAll", query = "SELECT t FROM TblARTICULOEXISTENCIAALMACEN t")})
 public class TblARTICULOEXISTENCIAALMACEN implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

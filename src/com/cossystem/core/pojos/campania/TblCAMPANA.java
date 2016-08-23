@@ -39,7 +39,7 @@ import org.hibernate.annotations.CascadeType;
     @NamedQuery(name = "TblCAMPANA.findAll", query = "SELECT t FROM TblCAMPANA t")})
 public class TblCAMPANA implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Column(name = "IDEMPRESA")
     private Integer idempresa;
     @Id

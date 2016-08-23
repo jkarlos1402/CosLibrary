@@ -37,7 +37,7 @@ import org.hibernate.annotations.CascadeType;
     @NamedQuery(name = "CatCPDELEGACION.findAll", query = "SELECT c FROM CatCPDELEGACION c")})
 public class CatCPDELEGACION implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,7 +56,7 @@ public class CatCPDELEGACION implements Serializable {
     private String urlGooglemap;
     @Column(name = "url_otra")
     private String urlOtra;
-    @OneToMany(mappedBy = "catCPDELEGACION",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "catCPDELEGACION")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private List<CatCPCOLONIA> catCPCOLONIAList;
     @JoinColumn(name = "IdEstado", referencedColumnName = "IdEstado")

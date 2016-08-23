@@ -7,6 +7,7 @@ package com.cossystem.core.pojos.catalogos;
 
 import com.cossystem.core.pojos.empresa.TblEmpresa;
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,8 +19,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -32,7 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CatArea.findAll", query = "SELECT c FROM CatArea c")})
 public class CatArea implements Serializable {
 
-    private static final long serialVersionUID = 1L;   
+//    private static final long serialVersionUID = 1L;
     @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
     @ManyToOne(fetch = FetchType.LAZY)
     private TblEmpresa idEmpresa;
@@ -45,6 +48,9 @@ public class CatArea implements Serializable {
     private String areaDescripcion;
     @Column(name = "IdStatus")
     private Boolean idStatus;
+
+    @OneToMany(mappedBy = "idArea",fetch = FetchType.LAZY)
+    private List<CatDepartamento> catDepartamentosList;
 
     public CatArea() {
     }
@@ -85,6 +91,15 @@ public class CatArea implements Serializable {
         this.idStatus = idStatus;
     }
 
+    @XmlTransient
+    public List<CatDepartamento> getCatDepartamentosList() {
+        return catDepartamentosList;
+    }
+
+    public void setCatDepartamentosList(List<CatDepartamento> catDepartamentosList) {
+        this.catDepartamentosList = catDepartamentosList;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -109,5 +124,5 @@ public class CatArea implements Serializable {
     public String toString() {
         return areaDescripcion;
     }
-    
+
 }
