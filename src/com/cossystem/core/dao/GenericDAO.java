@@ -3,14 +3,17 @@ package com.cossystem.core.dao;
 import com.cossystem.core.exception.DAOException;
 import com.cossystem.core.exception.DataBaseException;
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectDeletedException;
 import org.hibernate.Query;
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -53,7 +56,7 @@ public class GenericDAO {
     public <T, O extends Serializable> T findById(final Class clase, O id) throws DAOException {
         T elemento = null;
         try {
-            session.beginTransaction();
+            session.beginTransaction();            
             elemento = (T) session.get(clase, id);
             session.getTransaction().commit();
         } catch (TypeMismatchException e) {
@@ -254,6 +257,25 @@ public class GenericDAO {
             throw new DAOException(e.getCause().getMessage());
         }
         return elementos;
+    }
+
+    public ScrollableResults findByComponents(
+            final Class clase,
+            final Map<String, Object> componentes,
+            final int fetchSize) throws DAOException {
+        Criteria criteria = session.createCriteria(clase);
+        criteria.setFetchSize(fetchSize);
+        try {
+            if (componentes != null && !componentes.keySet().isEmpty()) {
+                for (String componente : componentes.keySet()) {
+                    criteria.add(Restrictions.eq(componente, componentes.get(componente)));
+                }
+            }
+            return criteria.scroll();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            throw new DAOException(e.getCause().getMessage());
+        }
     }
 
     public boolean excecuteNativeDDLSQL(final String sqlNative) throws DAOException {

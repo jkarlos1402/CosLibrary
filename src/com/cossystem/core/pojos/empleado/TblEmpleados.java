@@ -111,7 +111,7 @@ public class TblEmpleados implements Serializable {
     @Column(name = "NSS")
     private String nss;
     @Column(name = "FECHA_NACIMIENTO")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaNacimiento;
     @Column(name = "EMAIL")
     private String email;
@@ -360,7 +360,7 @@ public class TblEmpleados implements Serializable {
         return fechaIngreso;
     }
 
-    public void setFechaIngreso(Date fechaIngreso) {
+    public void setFechaIngreso(Date fechaIngreso) {       
         this.fechaIngreso = fechaIngreso;
     }
 

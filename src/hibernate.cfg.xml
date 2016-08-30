@@ -1,17 +1,17 @@
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-<!--        <property name="connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+        <property name="connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
         <property name="connection.url">jdbc:sqlserver://localhost\SQLEXPRESS:1433;databaseName=CosAdminV11</property>
         <property name="connection.username">usuario1</property>
-        <property name="connection.password">usuario1</property>       -->
-        <property name="hibernate.session_factory_name">sessionFactory</property> 
-        <property name="hibernate.connection.datasource">jdbc/CossystemDataSource</property>
+        <property name="connection.password">usuario1</property>       
+<!--        <property name="hibernate.session_factory_name">sessionFactory</property> 
+        <property name="hibernate.connection.datasource">jdbc/CossystemDataSource</property>-->
         <property name="hibernate.dialect">org.hibernate.dialect.SQLServer2012Dialect</property>
         <property name="show_sql">false</property>
-        <property name="format_sql">true</property>
+        <property name="format_sql">false</property>
         <property name="current_session_context_class">thread</property>
-        <property name="hibernate.cache.use_second_level_cache">true</property>
+        <property name="hibernate.cache.use_second_level_cache">false</property>
                                        
         <mapping class="com.cossystem.core.pojos.accesopantallas.TblAccesoPantallas" />        
         <mapping class="com.cossystem.core.pojos.accesopantallas.TblAccesoPantallasArchivos" />        
@@ -87,6 +87,7 @@
         <mapping class="com.cossystem.core.pojos.catalogos.CatTipoConexion"/>        
         <mapping class="com.cossystem.core.pojos.catalogos.CatCECO"/>        
         <mapping class="com.cossystem.core.pojos.catalogos.CatStatus"/>        
+        <mapping class="com.cossystem.core.pojos.catalogos.TblConfiguracionCossAdmin"/>        
         
         <mapping class="com.cossystem.core.pojos.chat.TblChatBienvenida" />        
         <mapping class="com.cossystem.core.pojos.chat.TblChatDia" />        
