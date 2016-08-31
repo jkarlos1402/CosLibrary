@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,7 +36,7 @@ import org.hibernate.annotations.CascadeType;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "CatCPDELEGACION.findAll", query = "SELECT c FROM CatCPDELEGACION c")})
-public class CatCPDELEGACION implements Serializable {
+public class CatCPDELEGACION implements Serializable {    
 
 //    private static final long serialVersionUID = 1L;
     @Id
@@ -166,5 +167,8 @@ public class CatCPDELEGACION implements Serializable {
     public String toString() {
         return "CatCPDELEGACION{" + "iddelegacion=" + iddelegacion + ", delegacion=" + delegacion + ", idMunicipioInegi=" + idMunicipioInegi + ", latitud=" + latitud + ", longitud=" + longitud + ", urlGooglemap=" + urlGooglemap + ", urlOtra=" + urlOtra + ", catCPCOLONIAList=" + catCPCOLONIAList + ", catCPESTADO=" + catCPESTADO + '}';
     }
+
+    public CatCPDELEGACION() {
+    }   
 
 }

@@ -424,5 +424,5 @@ public class TblConfiguracionCossAdmin implements Serializable {
     public String toString() {
         return "com.cossystem.core.pojos.catalogos.TblConfiguracionCossAdmin[ idRegistro=" + idRegistro + " ]";
     }
-    
+
 }

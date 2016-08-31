@@ -111,7 +111,7 @@ public class TblEmpleados implements Serializable {
     @Column(name = "NSS")
     private String nss;
     @Column(name = "FECHA_NACIMIENTO")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date fechaNacimiento;
     @Column(name = "EMAIL")
     private String email;
@@ -129,7 +129,7 @@ public class TblEmpleados implements Serializable {
     @Column(name = "ACTIVIDAD_ACTUAL")
     private String actividadActual;
     @Column(name = "ACTIVIDAD_FECHA")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date actividadFecha;
     @JoinColumn(name = "IdActividad", referencedColumnName = "IdActividad")
     @ManyToOne(fetch = FetchType.EAGER)
@@ -147,13 +147,13 @@ public class TblEmpleados implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private CatTipoConexion idTipoConexion;
     @Column(name = "Fecha_Conexion")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date fechaConexion;
     @Column(name = "Fecha_Carga")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date fechaCarga;
     @Column(name = "Fecha_Actualizacion")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date fechaActualizacion;
     @Column(name = "Edad")
     private Integer edad;

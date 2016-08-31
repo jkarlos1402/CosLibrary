@@ -19,11 +19,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author TMXIDSJPINAM
+ * @author JC
  */
 @Entity
 @Table(name = "Cat_CP_COLONIA")
@@ -32,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "CatCPCOLONIA.findAll", query = "SELECT c FROM CatCPCOLONIA c")})
 public class CatCPCOLONIA implements Serializable {
 
-//    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,10 +52,13 @@ public class CatCPCOLONIA implements Serializable {
     @Column(name = "url_googlemap")
     private String urlGooglemap;
     @Column(name = "url_otra")
-    private String urlOtra;    
+    private String urlOtra;
     @JoinColumn(name = "IDDELEGACION", referencedColumnName = "IDDELEGACION")
     @ManyToOne(optional = false)
     private CatCPDELEGACION catCPDELEGACION;
+    @JoinColumn(name = "IdEstado", referencedColumnName = "IdEstado")
+    @ManyToOne(optional = false)
+    private CatCPESTADO catCPESTADO;
 
     public CatCPCOLONIA() {
     }
@@ -134,13 +136,20 @@ public class CatCPCOLONIA implements Serializable {
         this.urlOtra = urlOtra;
     }
 
-    @XmlTransient
     public CatCPDELEGACION getCatCPDELEGACION() {
         return catCPDELEGACION;
     }
 
     public void setCatCPDELEGACION(CatCPDELEGACION catCPDELEGACION) {
         this.catCPDELEGACION = catCPDELEGACION;
+    }
+
+    public CatCPESTADO getCatCPESTADO() {
+        return catCPESTADO;
+    }
+
+    public void setCatCPESTADO(CatCPESTADO catCPESTADO) {
+        this.catCPESTADO = catCPESTADO;
     }
 
     @Override

@@ -63,7 +63,7 @@ public class CatCPESTADO implements Serializable {
     @Column(name = "url_otra")
     private String urlOtra;
     @JoinColumn(name = "IdRegionGeografica", referencedColumnName = "IdRegionGeografica")
-    @ManyToOne    
+    @ManyToOne
     private CatRegionGeografica idRegionGeografica;
     @OneToMany(mappedBy = "catCPESTADO")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
@@ -71,14 +71,17 @@ public class CatCPESTADO implements Serializable {
     @OneToMany(mappedBy = "idEstado")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     private List<CatCPTITULOESTADISTICADET> catCPTITULOESTADISTICADETList;
-    @OneToMany(mappedBy = "idEstado")    
+    @OneToMany(mappedBy = "idEstado")
     private List<TblEmpresaReportes> tblEmpresaReportesList;
-    @OneToMany(mappedBy = "idEstado")    
+    @OneToMany(mappedBy = "idEstado")
     private List<TblEmpresaDirEntrega> tblEmpresaDirEntregaList;
-    @OneToMany(mappedBy = "idEstado")   
+    @OneToMany(mappedBy = "idEstado")
     private List<TblEmpresaLugarExpedicion> tblEmpresaLugarExpedicionList;
-    @OneToMany(mappedBy = "idEstado")    
+    @OneToMany(mappedBy = "idEstado")
     private List<TblEmpresaFiscal> tblEmpresaFiscalList;
+
+    public CatCPESTADO() {
+    }
 
     public Integer getIdEstado() {
         return idEstado;
@@ -222,5 +225,4 @@ public class CatCPESTADO implements Serializable {
     public String toString() {
         return nombreEstado;
     }
-
 }
