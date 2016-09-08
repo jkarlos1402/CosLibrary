@@ -57,8 +57,7 @@ public class TblEmpleadosIncidencias implements Serializable {
     @Column(name = "IdStatus")
     private Integer idStatus;
     @JoinColumn(name = "IdTipoIncidencia", referencedColumnName = "IdTipoIncidencia")
-    @ManyToOne
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @ManyToOne    
     private CatTipoIncidencias idTipoIncidencia;
     @JoinColumn(name = "IdEmpleado", referencedColumnName = "IdEmpleado")
     @ManyToOne

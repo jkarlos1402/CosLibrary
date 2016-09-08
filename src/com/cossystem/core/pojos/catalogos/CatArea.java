@@ -49,7 +49,7 @@ public class CatArea implements Serializable {
     @Column(name = "IdStatus")
     private Boolean idStatus;
 
-    @OneToMany(mappedBy = "idArea",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "idArea", fetch = FetchType.LAZY)
     private List<CatDepartamento> catDepartamentosList;
 
     public CatArea() {
@@ -122,7 +122,7 @@ public class CatArea implements Serializable {
 
     @Override
     public String toString() {
-        return areaDescripcion;
+        return "CatArea{ idArea=" + idArea + ", areaDescripcion=" + areaDescripcion + ", idStatus=" + idStatus + '}';
     }
 
 }

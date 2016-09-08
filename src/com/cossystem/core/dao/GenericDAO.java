@@ -55,9 +55,7 @@ public class GenericDAO {
     public <T, O extends Serializable> T findById(final Class clase, O id) throws DAOException {
         T elemento = null;
         try {
-            session.beginTransaction();
             elemento = (T) session.get(clase, id);
-            session.getTransaction().commit();
         } catch (TypeMismatchException e) {
             throw new DAOException("Error, parámetros incompatibles: " + e.getMessage());
         }
@@ -80,24 +78,28 @@ public class GenericDAO {
     }
 
     public <T extends Serializable> void delete(final T persistentInstance) throws DAOException {
+        delete(persistentInstance, true);
+    }
+
+    public <T extends Serializable> void delete(final T persistentInstance, boolean transaction) throws DAOException {
         try {
-            tx = session.beginTransaction();
+            if (transaction) {
+                tx = session.beginTransaction();
+            }
             session.delete(persistentInstance);
-            tx.commit();
-        } catch (HibernateException e) {
-            throw new DAOException("Error: entidad no conocida o no válida, " + e.getMessage());
-        } catch (IllegalArgumentException e2) {
-            throw new DAOException("Error: Argumentos no válidos, " + e2.getMessage());
+            if (transaction) {
+                tx.commit();
+            }
+        } catch (HibernateException | IllegalArgumentException e) {
+            throw new DAOException("Error: entidad no conocida o no válida, " + e.getCause().getMessage());
         } finally {
             try {
-                if (tx.isActive()) {
+                if (tx != null && tx.isActive()) {
                     tx.rollback();
                 }
                 session.flush();
-            } catch (ObjectDeletedException ex) {
-                throw new DAOException("Error: al eliminar registro, " + ex.getMessage());
-            } catch (ConstraintViolationException ex2) {
-                throw new DAOException("Error: al eliminar registro, " + ex2.getMessage());
+            } catch (ObjectDeletedException | ConstraintViolationException ex) {
+                throw new DAOException("Error: " + ex.getCause().getMessage());
             }
         }
     }
@@ -111,10 +113,8 @@ public class GenericDAO {
                 }
             }
             tx.commit();
-        } catch (HibernateException e) {
-            throw new DAOException("Error: entidad no conocida o no válida, " + e.getMessage());
-        } catch (IllegalArgumentException e2) {
-            throw new DAOException("Error: entidad no conocida o no válida, " + e2.getMessage());
+        } catch (HibernateException | IllegalArgumentException e) {
+            throw new DAOException("Error: entidad no conocida o no válida, " + e.getCause().getMessage());
         } finally {
             try {
                 if (tx.isActive()) {
@@ -142,15 +142,12 @@ public class GenericDAO {
             if (transaccion) {
                 tx.commit();
             }
-        } catch (HibernateException e) {
-            String message;
-            message = e.getMessage();
-            e.printStackTrace();
-            throw new DAOException("Error al guardar la entidad: entidad no conocida o no válida, " + message);
-        } catch (IllegalArgumentException e2) {
-            String message;
-            message = e2.getMessage();
-            throw new DAOException("Error al guardar la entidad: entidad no conocida o no válida, " + message);
+        } catch (HibernateException | IllegalArgumentException e) {
+            if (e.getCause() != null) {
+                throw new DAOException("Error " + e.getCause().getMessage());
+            } else {
+                throw new DAOException("Error " + e.getMessage());
+            }
         } finally {
             try {
                 if (tx != null && tx.isActive()) {
@@ -158,12 +155,12 @@ public class GenericDAO {
                 }
             } catch (Exception ex) {
                 String message;
-                if (ex instanceof Throwable) {
+                if (ex.getCause() != null) {
                     message = ex.getCause().getMessage();
                 } else {
                     message = ex.getMessage();
                 }
-                throw new DAOException("Error: No se puede guardar el registro, " + message);
+                throw new DAOException("Error: " + message);
             }
         }
     }
@@ -261,7 +258,7 @@ public class GenericDAO {
             if (elementos != null && !elementos.isEmpty()) {
                 return elementos;
             }
-        } catch (HibernateException e) {            
+        } catch (HibernateException e) {
             throw new DAOException(e.getCause().getMessage());
         }
         return elementos;
@@ -290,7 +287,7 @@ public class GenericDAO {
                 criteria.addOrder(Order.asc(campoId.getName()));
             }
             return criteria.scroll();
-        } catch (HibernateException e) {            
+        } catch (HibernateException e) {
             throw new DAOException(e.getCause().getMessage());
         }
     }

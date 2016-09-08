@@ -94,7 +94,7 @@ public class TblEmpleados implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private CatStatus idstatus;
     @Column(name = "NOMBRE")
-    private String nombre;   
+    private String nombre;
     @JoinColumn(name = "POSICION_ACTUAL", referencedColumnName = "IdPosicion")
     @ManyToOne(fetch = FetchType.EAGER)
     private TblEmpresaPosicion posicionActual;
@@ -133,7 +133,6 @@ public class TblEmpleados implements Serializable {
     private Date actividadFecha;
     @JoinColumn(name = "IdActividad", referencedColumnName = "IdActividad")
     @ManyToOne(fetch = FetchType.EAGER)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.REFRESH,CascadeType.PERSIST})
     private TblEmpleadosDiarioActividad idActividad;
     @JoinColumn(name = "IdActividadDet", referencedColumnName = "IdActividadDet")
     @ManyToOne(fetch = FetchType.EAGER)
@@ -163,67 +162,67 @@ public class TblEmpleados implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private TblEmpresaProyectos idEmpresaProyecto;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosDatosLaborales> tblEmpleadosDatosLaboralesList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosNomina> tblEmpleadosNominaList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosReferenciasPersonales> tblEmpleadosReferenciasPersonalesList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosEscolaridad> tblEmpleadosEscolaridadList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosFotos> tblEmpleadosFotosList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosReferenciasIncidencias> tblEmpleadosReferenciasIncidenciasList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosIncidencias> tblEmpleadosIncidenciasList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosReferenciasLaboral> tblEmpleadosReferenciasLaboralList;
     @OneToMany(mappedBy = "idempleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosDIRECCION> tblEmpleadosDIRECCIONList;
     @OneToMany(mappedBy = "idempleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosBancos> tblEmpleadosBancosList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosDatosFamiliares> tblEmpleadosDatosFamiliaresList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosDiarioActividad> tblEmpleadosDiarioActividadList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosArchivosAdjuntos> tblEmpleadosArchivosAdjuntosList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosProyectos> tblEmpleadosProyectosList;
     @OneToMany(mappedBy = "idempleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosGEOGRAFICO> tblEmpleadosGEOGRAFICOList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosRedesSociales> tblEmpleadosRedesSocialesList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosProspectos> tblEmpleadosProspectosList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosCaracteristicas> tblEmpleadosCaracteristicasList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosEquipo> tblEmpleadosEquipoList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosExperienciaPerfil> tblEmpleadosExperienciaPerfilList;
     @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosCliente> tblEmpleadosClienteList;
 
     public TblEmpleados() {
@@ -360,7 +359,7 @@ public class TblEmpleados implements Serializable {
         return fechaIngreso;
     }
 
-    public void setFechaIngreso(Date fechaIngreso) {       
+    public void setFechaIngreso(Date fechaIngreso) {
         this.fechaIngreso = fechaIngreso;
     }
 
@@ -759,7 +758,7 @@ public class TblEmpleados implements Serializable {
 
     @Override
     public String toString() {
-        return "TblEmpleados{" + "idEmpleado=" + idEmpleado + ", claveEmpleado=" + claveEmpleado + ", idArea=" + idArea + ", nombre=" + nombre + '}';
+        return "TblEmpleados{" + "idEmpleado=" + idEmpleado + ", claveEmpleado=" + claveEmpleado + ", idstatus=" + idstatus + ", nombre=" + nombre + ", posicionActual=" + posicionActual + ", posicionReportaA=" + posicionReportaA + ", fechaIngreso=" + fechaIngreso + ", rfc=" + rfc + ", curp=" + curp + ", nss=" + nss + ", fechaNacimiento=" + fechaNacimiento + ", email=" + email + ", telefono=" + telefono + ", telefonoParticular=" + telefonoParticular + ", telefonoMovil=" + telefonoMovil + ", descripcionGeneral=" + descripcionGeneral + ", actividadActual=" + actividadActual + ", actividadFecha=" + actividadFecha + ", fechaConexion=" + fechaConexion + ", fechaCarga=" + fechaCarga + ", fechaActualizacion=" + fechaActualizacion + ", edad=" + edad + ", contacto=" + contacto + '}';
     }
 
 }
