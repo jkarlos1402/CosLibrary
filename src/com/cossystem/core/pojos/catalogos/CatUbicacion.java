@@ -107,7 +107,7 @@ public class CatUbicacion implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cossystem.core.pojos.catalogos.CatUbicacion[ idUbicacion=" + idUbicacion + " ]";
+        return descripcion;
     }
-    
+
 }

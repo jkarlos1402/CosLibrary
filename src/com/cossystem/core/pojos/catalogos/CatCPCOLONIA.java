@@ -174,7 +174,7 @@ public class CatCPCOLONIA implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cossystem.core.pojos.catalogos.CatCPCOLONIA[ idcolonia=" + idcolonia + " ]";
+        return colonia;
     }
 
 }

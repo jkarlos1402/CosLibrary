@@ -508,7 +508,7 @@ public class TblEmpresa implements Serializable {
 
     @Override
     public String toString() {
-        return "TblEmpresa{" + "idEmpresa=" + idEmpresa + ", empAdministrador=" + empAdministrador + ", empRazonSocial=" + empRazonSocial + ", empRFC=" + empRFC + ", empCurp=" + empCurp + ", empTel1=" + empTel1 + ", empTel2=" + empTel2 + ", empFax=" + empFax + ", empUrl=" + empUrl + ", empEmail=" + empEmail + ", empLogo=" + empLogo + ", empimss=" + empimss + ", empinfonavit=" + empinfonavit + ", empfonacot=" + empfonacot + ", empnofonacot=" + empnofonacot + '}';
+        return empRazonSocial;
     }
 
 }

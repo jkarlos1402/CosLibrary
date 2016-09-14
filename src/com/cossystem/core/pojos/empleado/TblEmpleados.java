@@ -20,6 +20,7 @@ import com.cossystem.core.pojos.empresa.TblEmpresa;
 import com.cossystem.core.pojos.empresa.TblEmpresaPosicion;
 import com.cossystem.core.pojos.empresa.TblEmpresaProyectos;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -173,8 +174,8 @@ public class TblEmpleados implements Serializable {
     @OneToMany(mappedBy = "idEmpleado")
     @Cascade({CascadeType.DELETE})
     private List<TblEmpleadosEscolaridad> tblEmpleadosEscolaridadList;
-    @OneToMany(mappedBy = "idEmpleado")
-    @Cascade({CascadeType.DELETE})
+    @OneToMany(mappedBy = "idEmpleado",orphanRemoval = true)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.DELETE})
     private List<TblEmpleadosFotos> tblEmpleadosFotosList;
     @OneToMany(mappedBy = "idEmpleado")
     @Cascade({CascadeType.DELETE})

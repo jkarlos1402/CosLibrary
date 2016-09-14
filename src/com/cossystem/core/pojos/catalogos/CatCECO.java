@@ -136,7 +136,7 @@ public class CatCECO implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cossystem.core.pojos.catalogos.CatCECO[ idCentroCostos=" + idCentroCostos + " ]";
+        return centroCostosNombre;
     }
     
 }

@@ -4,7 +4,7 @@ import com.cossystem.core.dao.GenericDAO;
 import com.cossystem.core.exception.CossException;
 import com.cossystem.core.exception.DAOException;
 import com.cossystem.core.exception.DataBaseException;
-import com.cossystem.core.pojos.catalogos.TblConfiguracionCossAdmin;
+import com.cossystem.core.pojos.accesopantallas.TblAccesoPantallasCampos;
 import com.monitorjbl.xlsx.StreamingReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,18 +13,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -39,7 +36,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.util.HSSFCellUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -63,7 +59,7 @@ public class ManagerXLSX {
         File directorioBase;
         try {
             genericDAO = new GenericDAO();
-            List<TblConfiguracionCossAdmin> configuracion = obtieneConfiguracion(claseEntidad);
+            List<TblAccesoPantallasCampos> configuracion = Configuracion.obtieneConfiguracion(claseEntidad);
             ScrollableResults results = genericDAO.findByComponents(claseEntidad, filtros, 200);
             creaHojaExcel(workBook, claseEntidad, results, configuracion);
             directorioBase = new File(rutaDestino);
@@ -94,7 +90,7 @@ public class ManagerXLSX {
         return nombreArchivoSalida;
     }
 
-    private static void creaHojaExcel(SXSSFWorkbook workBook, Class claseEntidad, ScrollableResults results, List<TblConfiguracionCossAdmin> configuracion) throws CossException {
+    private static void creaHojaExcel(SXSSFWorkbook workBook, Class claseEntidad, ScrollableResults results, List<TblAccesoPantallasCampos> configuracion) throws CossException {
         Field[] camposClase = claseEntidad.getDeclaredFields();
         List<Field> camposColumnas = new ArrayList<>();
         List<Method> metodosColumnas = new ArrayList<>();
@@ -236,12 +232,12 @@ public class ManagerXLSX {
         }
     }
 
-    private static List<String> obtieneDescripcionEncabezados(Class claseEntidad, List<TblConfiguracionCossAdmin> configuracion) {
+    private static List<String> obtieneDescripcionEncabezados(Class claseEntidad, List<TblAccesoPantallasCampos> configuracion) {
         List<String> encabezados = new ArrayList<>();
         Field[] camposClase = claseEntidad.getDeclaredFields();
         String nombreCampoTabla;
         String nombreTabla = ((Table) claseEntidad.getAnnotation(Table.class)).name();
-        for (TblConfiguracionCossAdmin config : configuracion) {
+        for (TblAccesoPantallasCampos config : configuracion) {
             if (config.getNTabla().equalsIgnoreCase(nombreTabla)) {
                 for (Field campo : camposClase) {
                     if (campo.isAnnotationPresent(Column.class)) {
@@ -288,14 +284,14 @@ public class ManagerXLSX {
         }
     }
 
-    private static void obtieneCamposMetodosColumnas(Class claseEntidad, List<TblConfiguracionCossAdmin> configuracion, List<Method> metodos, List<Field> campos) {
+    private static void obtieneCamposMetodosColumnas(Class claseEntidad, List<TblAccesoPantallasCampos> configuracion, List<Method> metodos, List<Field> campos) {
         metodos.clear();
         campos.clear();
         Field[] camposClase = claseEntidad.getDeclaredFields();
         Method[] metodosClase = claseEntidad.getDeclaredMethods();
         String nombreCampoTabla;
         String nombreTabla = ((Table) claseEntidad.getAnnotation(Table.class)).name();
-        for (TblConfiguracionCossAdmin config : configuracion) {
+        for (TblAccesoPantallasCampos config : configuracion) {
             if (config.getNTabla().equalsIgnoreCase(nombreTabla)) {
                 campoLabel:
                 for (Field campo : camposClase) {
@@ -332,7 +328,7 @@ public class ManagerXLSX {
     }
 
     public static void cargaCatalogoExcel(Class claseEntidad, String pathFile) throws CossException, IOException {
-        List<TblConfiguracionCossAdmin> configuracion = null;
+        List<TblAccesoPantallasCampos> configuracion = null;
         Field[] camposClaseEntidad = claseEntidad != null ? claseEntidad.getDeclaredFields() : null;
         List<String> nombreHojasRelacion = null;
         List<Class> clasesRelacion = null;
@@ -361,7 +357,7 @@ public class ManagerXLSX {
         String nombreTabla = claseEntidad != null ? ((Table) claseEntidad.getAnnotation(Table.class)).name() : null;
         String nombreTablaRelacion = null;
         if (camposClaseEntidad != null) {
-            configuracion = obtieneConfiguracion(claseEntidad);
+            configuracion = Configuracion.obtieneConfiguracion(claseEntidad);
             nombreHojasRelacion = new ArrayList<>();
             clasesRelacion = new ArrayList<>();
             if (claseEntidad != null && claseEntidad.isAnnotationPresent(Table.class)) {
@@ -382,7 +378,7 @@ public class ManagerXLSX {
             try {
                 sheet = workbook.getSheet(nombreHoja);
                 obtieneCamposMetodosColumnas(claseEntidad, metodosColumnas, camposColumnas, false);
-                for (TblConfiguracionCossAdmin config : configuracion) {
+                for (TblAccesoPantallasCampos config : configuracion) {
                     for (int i = 0; i < camposColumnas.size(); i++) {
                         if (camposColumnas.get(i).isAnnotationPresent(Id.class) && config.getEsTransaccional() != null && config.getEsTransaccional()) {
                             claseDAO = Class.forName(GenericDAO.class.getPackage().getName() + ".catalogo." + claseEntidad.getSimpleName() + "DAO");
@@ -401,7 +397,7 @@ public class ManagerXLSX {
                         for (Cell cell : row) {
                             if (cell.getCellType() == Cell.CELL_TYPE_STRING && cell.getStringCellValue() != null && !"".equals(cell.getStringCellValue().trim())) {
                                 labelMetodo:
-                                for (TblConfiguracionCossAdmin config : configuracion) {
+                                for (TblAccesoPantallasCampos config : configuracion) {
                                     if (config.getNTabla().equalsIgnoreCase(nombreTabla) && config.getDescripcion().trim().equalsIgnoreCase(cell.getStringCellValue().trim())) {
                                         for (int i = 0; i < camposColumnas.size(); i++) {
                                             if ((camposColumnas.get(i).isAnnotationPresent(JoinColumn.class) && ((JoinColumn) camposColumnas.get(i).getAnnotation(JoinColumn.class)).name().equalsIgnoreCase(config.getNColumna())) || (camposColumnas.get(i).isAnnotationPresent(Column.class) && ((Column) camposColumnas.get(i).getAnnotation(Column.class)).name().equalsIgnoreCase(config.getNColumna()))) {
@@ -492,7 +488,7 @@ public class ManagerXLSX {
                                                 for (Cell cellRelacion : rowRelacion) {
                                                     if (cellRelacion.getCellType() == Cell.CELL_TYPE_STRING && cellRelacion.getStringCellValue() != null && !"".equals(cellRelacion.getStringCellValue().trim())) {
                                                         labelMetodo:
-                                                        for (TblConfiguracionCossAdmin config : configuracion) {
+                                                        for (TblAccesoPantallasCampos config : configuracion) {
                                                             if (config.getNTabla().equalsIgnoreCase(nombreTablaRelacion) && config.getDescripcion().trim().equalsIgnoreCase(cellRelacion.getStringCellValue().trim())) {
                                                                 for (int j = 0; j < camposRelaciones.size(); j++) {
                                                                     if ((camposRelaciones.get(j).isAnnotationPresent(JoinColumn.class) && ((JoinColumn) camposRelaciones.get(j).getAnnotation(JoinColumn.class)).name().equalsIgnoreCase(config.getNColumna())) || (camposRelaciones.get(j).isAnnotationPresent(Column.class) && ((Column) camposRelaciones.get(j).getAnnotation(Column.class)).name().equalsIgnoreCase(config.getNColumna()))) {
@@ -577,9 +573,6 @@ public class ManagerXLSX {
 //                                            break;
                                             }
                                         }
-//                                    for (Row rowRelacion : sheetRelacion) {
-//                                        
-//                                    }
                                     } catch (ArrayIndexOutOfBoundsException ex) {
                                         //no hace nada
                                     }
@@ -616,23 +609,7 @@ public class ManagerXLSX {
             }
         }
     }
-
-    private static List<TblConfiguracionCossAdmin> obtieneConfiguracion(Class claseEntidad) {
-        GenericDAO genericDAO = null;
-        List<TblConfiguracionCossAdmin> configuracion = null;
-        String nombreTabla = ((Table) claseEntidad.getAnnotation(Table.class)).name();
-        try {
-            genericDAO = new GenericDAO();
-            configuracion = genericDAO.findByQuery(TblConfiguracionCossAdmin.class, "select c from TblConfiguracionCossAdmin c where c.tablaPadre = '" + nombreTabla + "' order by c.nTabla,c.idColumna asc");
-        } catch (DataBaseException | DAOException ex) {
-            Logger.getLogger(ManagerXLSX.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (genericDAO != null) {
-                genericDAO.closeDAO();
-            }
-        }
-        return configuracion;
-    }
+   
 
     private static Class obtieneTipoListaDeCampo(Field campoLista) {
         ParameterizedType listType = campoLista != null ? (ParameterizedType) campoLista.getGenericType() : null;

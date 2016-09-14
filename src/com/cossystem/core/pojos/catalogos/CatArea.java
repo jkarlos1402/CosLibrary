@@ -122,7 +122,7 @@ public class CatArea implements Serializable {
 
     @Override
     public String toString() {
-        return "CatArea{ idArea=" + idArea + ", areaDescripcion=" + areaDescripcion + ", idStatus=" + idStatus + '}';
+        return areaDescripcion;
     }
 
 }

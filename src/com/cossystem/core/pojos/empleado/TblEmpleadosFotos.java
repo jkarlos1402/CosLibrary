@@ -5,10 +5,12 @@
  */
 package com.cossystem.core.pojos.empleado;
 
+import com.cossystem.core.pojos.empresa.TblEmpresa;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,12 +39,15 @@ public class TblEmpleadosFotos implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdEmpleadoFotos")
     private Integer idEmpleadoFotos;
-    @Column(name = "IdEmpresa")
-    private Integer idEmpresa;
+    @JoinColumn(name = "IdEmpresa", referencedColumnName = "idEmpresa")
+    @ManyToOne(fetch = FetchType.EAGER)    
+    private TblEmpresa idEmpresa;
     @Column(name = "NombreFoto")
     private String nombreFoto;
     @Column(name = "IdStatus")
-    private Integer idStatus;
+    private Boolean idStatus;
+    @Column(name = "Principal")
+    private Boolean principal;
     @JoinColumn(name = "IdEmpleado", referencedColumnName = "IdEmpleado")
     @ManyToOne
     private TblEmpleados idEmpleado;
@@ -55,11 +60,11 @@ public class TblEmpleadosFotos implements Serializable {
         this.idEmpleadoFotos = idEmpleadoFotos;
     }
 
-    public Integer getIdEmpresa() {
+    public TblEmpresa getIdEmpresa() {
         return idEmpresa;
     }
 
-    public void setIdEmpresa(Integer idEmpresa) {
+    public void setIdEmpresa(TblEmpresa idEmpresa) {
         this.idEmpresa = idEmpresa;
     }
 
@@ -71,11 +76,11 @@ public class TblEmpleadosFotos implements Serializable {
         this.nombreFoto = nombreFoto;
     }
 
-    public Integer getIdStatus() {
+    public Boolean getIdStatus() {
         return idStatus;
     }
 
-    public void setIdStatus(Integer idStatus) {
+    public void setIdStatus(Boolean idStatus) {
         this.idStatus = idStatus;
     }
 
@@ -86,6 +91,14 @@ public class TblEmpleadosFotos implements Serializable {
 
     public void setIdEmpleado(TblEmpleados idEmpleado) {
         this.idEmpleado = idEmpleado;
+    }
+
+    public Boolean getPrincipal() {
+        return principal;
+    }
+
+    public void setPrincipal(Boolean principal) {
+        this.principal = principal;
     }
 
     @Override

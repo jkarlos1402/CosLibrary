@@ -20,6 +20,7 @@
         <mapping class="com.cossystem.core.pojos.accesopantallas.TblAccesoTipoUsuario" />        
         <mapping class="com.cossystem.core.pojos.accesopantallas.TblAccesoUsuarioPantallas" />        
         <mapping class="com.cossystem.core.pojos.accesopantallas.TblAccesoUsuarioPantallasOperaciones" />
+        <mapping class="com.cossystem.core.pojos.accesopantallas.TblAccesoPantallasCampos" />
         
         <mapping class="com.cossystem.core.pojos.articulo.TblARTICULO" />
         <mapping class="com.cossystem.core.pojos.articulo.TblARTICULOALMACENAJE" />
