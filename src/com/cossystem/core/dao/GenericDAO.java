@@ -218,6 +218,7 @@ public class GenericDAO {
         Query queryHql;
         try {
             queryHql = session.createQuery(query);
+            queryHql.setMaxResults(1000);
             elementos = queryHql.list();
             if (elementos != null && !elementos.isEmpty()) {
                 T muestra = elementos.get(0);
@@ -260,6 +261,7 @@ public class GenericDAO {
             if (campoId != null) {
                 criteria.addOrder(Order.asc(campoId.getName()));
             }
+            criteria.setMaxResults(1000);
             elementos = criteria.list();
             if (elementos != null && !elementos.isEmpty()) {
                 return elementos;
@@ -440,6 +442,7 @@ public class GenericDAO {
         try {
             if (sqlNative != null) {
                 sql = session.createSQLQuery(sqlNative);
+                sql.setMaxResults(1000);
                 res = sql.list();
             } else {
                 throw new DAOException("Error, can not excecute sentence: " + sqlNative);
@@ -458,6 +461,7 @@ public class GenericDAO {
         try {
             if (sqlNative != null) {
                 sql = session.createSQLQuery(sqlNative).setResultTransformer(Transformers.aliasToBean(claseRes));
+                sql.setMaxResults(1000);
                 res = sql.list();
             } else {
                 throw new DAOException("Error, can not excecute sentence: " + sqlNative);
