@@ -38,9 +38,12 @@ public class GenericDAO {
         this.hibernateUtil = new HibernateUtil();
         sessionFactory = this.hibernateUtil.getSessionFactory();
         session = sessionFactory.openSession();
-    }
+    }    
 
     public Session getSession() {
+        if(!session.isOpen()){
+            session = sessionFactory.openSession();
+        }
         return session;
     }
 

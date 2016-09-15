@@ -153,16 +153,14 @@ public class Filtro implements Serializable {
         return campoEntidad;
     }
 
-    public void setCampoEntidad(Field campoEntidad) {
-        System.out.println("llego aqui");
+    public void setCampoEntidad(Field campoEntidad) {        
         if (campoEntidad != null && campoEntidad.isAnnotationPresent(ManyToOne.class)) {
             GenericDAO genericDAO = null;
             try {
                 genericDAO = new GenericDAO();
                 Map filtros = new TreeMap();
                 //filtros.put("status", true);
-                componentesComboCatalogo = genericDAO.findByComponents(campoEntidad.getType(), filtros);
-                System.out.println("componentes combo catalogo: "+componentesComboCatalogo.size()+ " de tipo: "+campoEntidad.getType().getSimpleName());
+                componentesComboCatalogo = genericDAO.findByComponents(campoEntidad.getType(), filtros);                
             } catch (DataBaseException | DAOException ex) {
                 Logger.getLogger(Filtro.class.getName()).log(Level.SEVERE, null, ex);
             } finally {

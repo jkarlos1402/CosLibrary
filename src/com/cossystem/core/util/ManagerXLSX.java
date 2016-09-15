@@ -47,6 +47,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.hibernate.ScrollableResults;
 import org.hibernate.StaleStateException;
 import org.hibernate.Transaction;
+import org.hibernate.TransientObjectException;
 
 public class ManagerXLSX {
 
@@ -354,6 +355,8 @@ public class ManagerXLSX {
         boolean bndRelacion = false;
         boolean bndEliminar = false;
         int contadorBatch = 0;
+        Object objEntidad = null;
+        Object objEntidadRelacion = null;
         String nombreTabla = claseEntidad != null ? ((Table) claseEntidad.getAnnotation(Table.class)).name() : null;
         String nombreTablaRelacion = null;
         if (camposClaseEntidad != null) {
@@ -416,7 +419,7 @@ public class ManagerXLSX {
                         }
                         nuevoABuscar = null;
                         bndEliminar = false;
-                        Object objEntidad = claseEntidad != null ? claseEntidad.newInstance() : null;
+                        objEntidad = claseEntidad != null ? claseEntidad.newInstance() : null;
                         for (int i = 0; i < indicesMetodos.size(); i++) {
                             celdaExcel = row.getCell(i);
                             metodo = metodosColumnas.get(indicesMetodos.get(i));
@@ -502,7 +505,7 @@ public class ManagerXLSX {
                                                 }
                                                 contadorRowRelacion++;
                                             } else {
-                                                Object objEntidadRelacion = clasesRelacion.get(i) != null ? clasesRelacion.get(i).newInstance() : null;
+                                                objEntidadRelacion = clasesRelacion.get(i) != null ? clasesRelacion.get(i).newInstance() : null;
                                                 bndRelacion = false;
                                                 for (int j = 0; j < indicesMetodosRelaciones.size(); j++) {
                                                     celdaExcel = rowRelacion.getCell(j);
@@ -588,7 +591,7 @@ public class ManagerXLSX {
                 }
             } catch (ArrayIndexOutOfBoundsException ex) {
                 throw new IllegalArgumentException("Archivo inv\u00e1lido");
-            } catch (InstantiationException | IllegalAccessException | ParseException | DataBaseException | DAOException | ClassNotFoundException | NoSuchMethodException | SecurityException | StaleStateException | IllegalArgumentException | InvocationTargetException ex) {
+            } catch (TransientObjectException | InstantiationException | IllegalAccessException | ParseException | DataBaseException | DAOException | ClassNotFoundException | NoSuchMethodException | SecurityException | StaleStateException | IllegalArgumentException | InvocationTargetException ex) {
                 if (transaction != null && transaction.isActive()) {
                     transaction.rollback();
                 }
@@ -609,7 +612,6 @@ public class ManagerXLSX {
             }
         }
     }
-   
 
     private static Class obtieneTipoListaDeCampo(Field campoLista) {
         ParameterizedType listType = campoLista != null ? (ParameterizedType) campoLista.getGenericType() : null;
@@ -634,16 +636,16 @@ public class ManagerXLSX {
                         metodo.invoke(objeto, new Double(celdaExcel.getNumericCellValue()).floatValue());
                     }
                     break;
-                case Cell.CELL_TYPE_STRING:
-                    if (campo.getType().getName().equals(Integer.class.getName())) {
+                case Cell.CELL_TYPE_STRING:                    
+                    if (campo.getType().getName().equals(Integer.class.getName()) && !"".equals(celdaExcel.getStringCellValue().trim())) {
                         metodo.invoke(objeto, new Integer(celdaExcel.getStringCellValue().trim()));
-                    } else if (campo.getType().getName().equals(Double.class.getName())) {
+                    } else if (campo.getType().getName().equals(Double.class.getName()) && !"".equals(celdaExcel.getStringCellValue().trim())) {
                         metodo.invoke(objeto, new Double(celdaExcel.getStringCellValue().trim()));
-                    } else if (campo.getType().getName().equals(Float.class.getName())) {
+                    } else if (campo.getType().getName().equals(Float.class.getName()) && !"".equals(celdaExcel.getStringCellValue().trim())) {
                         metodo.invoke(objeto, new Float(celdaExcel.getStringCellValue().trim()));
-                    } else if (campo.getType().getName().equals(Date.class.getName())) {
+                    } else if (campo.getType().getName().equals(Date.class.getName()) && !"".equals(celdaExcel.getStringCellValue().trim())) {
                         metodo.invoke(objeto, dateFormat.parse(celdaExcel.getStringCellValue().trim()));
-                    } else if (campo.getType().getName().equalsIgnoreCase(Boolean.class.getName())) {
+                    } else if (campo.getType().getName().equalsIgnoreCase(Boolean.class.getName()) && !"".equals(celdaExcel.getStringCellValue().trim())) {
                         metodo.invoke(objeto, "1".equals(celdaExcel.getStringCellValue().trim()));
                     } else {
                         metodo.invoke(objeto, celdaExcel.getStringCellValue().trim());
@@ -654,7 +656,7 @@ public class ManagerXLSX {
     }
 
     private static void seteaIdCatalogoAObjeto(Cell celdaExcel, Object objeto, Field campo, Method metodo) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        if (celdaExcel != null) {
+        if (celdaExcel != null && (celdaExcel.getCellType() == Cell.CELL_TYPE_STRING || celdaExcel.getCellType() == Cell.CELL_TYPE_NUMERIC)) {
             Class claseCampo = campo != null ? campo.getType() : null;
             Field[] camposClase = claseCampo != null ? claseCampo.getDeclaredFields() : null;
             Object objCampo = null;
@@ -665,16 +667,19 @@ public class ManagerXLSX {
                         objCampo = claseCampo.newInstance();
                         switch (celdaExcel.getCellType()) {
                             case Cell.CELL_TYPE_STRING:
-                                field.set(objCampo, new Integer(celdaExcel.getStringCellValue()));
+                                if (!"".equals(celdaExcel.getStringCellValue().trim())) {
+                                    field.set(objCampo, new Integer(celdaExcel.getStringCellValue().trim()));
+                                    metodo.invoke(objeto, objCampo);
+                                }
                                 break;
                             case Cell.CELL_TYPE_NUMERIC:
                                 field.set(objCampo, new Double(celdaExcel.getNumericCellValue()).intValue());
+                                metodo.invoke(objeto, objCampo);
                                 break;
                         }
                         break;
                     }
-                }
-                metodo.invoke(objeto, objCampo);
+                }                
             }
         }
     }

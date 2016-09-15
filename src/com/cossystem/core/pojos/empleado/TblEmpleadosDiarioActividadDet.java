@@ -72,8 +72,7 @@ public class TblEmpleadosDiarioActividadDet implements Serializable {
     @Column(name = "Referencia")
     private Integer referencia;
     @JoinColumn(name = "IdStatus", referencedColumnName = "IdEmpStatus")
-    @ManyToOne
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @ManyToOne   
     private CatActividadStatus idStatus;
     @JoinColumn(name = "IdActividad", referencedColumnName = "IdActividad")
     @ManyToOne(optional = false,fetch = FetchType.LAZY)

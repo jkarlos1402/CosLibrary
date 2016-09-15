@@ -69,8 +69,7 @@ public class CosFacade {
     public <T extends Serializable> List<T> ejecutaSolicitud(PeticionesEnum tipoSolicitud, Class clase) throws DAOException {
         List<T> lista = null;
         switch (tipoSolicitud) {
-            case LISTA_CATALOGO_SIMPLE:
-                System.out.println("entro a obtener de base de datos");
+            case LISTA_CATALOGO_SIMPLE:                
                 lista = genericDAO.findAll(clase);
                 break;
         }

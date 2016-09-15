@@ -109,8 +109,7 @@ public class CatDepartamento implements Serializable {
     }
 
     @XmlTransient
-    public List<CatCECO> getCecoList() {
-        System.out.println("entro a obtener ceco");
+    public List<CatCECO> getCecoList() {        
         return cecoList;
     }
 
