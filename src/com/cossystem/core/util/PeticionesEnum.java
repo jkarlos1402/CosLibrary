@@ -5,7 +5,7 @@
  */
 package com.cossystem.core.util;
 
-import com.cossystem.core.pojos.empresa.Empresas;
+import com.cossystem.core.pojos.Empresas;
 
 /**
  *

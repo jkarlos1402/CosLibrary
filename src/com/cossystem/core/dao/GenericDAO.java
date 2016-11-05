@@ -5,7 +5,6 @@ import com.cossystem.core.exception.DataBaseException;
 import com.cossystem.core.util.Filtro;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Id;
@@ -22,9 +21,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SimpleExpression;
 import org.hibernate.exception.ConstraintViolationException;
-import org.hibernate.sql.JoinType;
 import org.hibernate.transform.Transformers;
 
 public class GenericDAO {
@@ -38,10 +35,10 @@ public class GenericDAO {
         this.hibernateUtil = new HibernateUtil();
         sessionFactory = this.hibernateUtil.getSessionFactory();
         session = sessionFactory.openSession();
-    }    
+    }
 
     public Session getSession() {
-        if(!session.isOpen()){
+        if (!session.isOpen()) {
             session = sessionFactory.openSession();
         }
         return session;
@@ -96,6 +93,34 @@ public class GenericDAO {
                 tx = session.beginTransaction();
             }
             session.delete(persistentInstance);
+            if (transaction) {
+                tx.commit();
+            }
+        } catch (HibernateException | IllegalArgumentException e) {
+            throw new DAOException("Error: entidad no conocida o no válida, " + e.getCause().getMessage());
+        } finally {
+            try {
+                if (tx != null && tx.isActive()) {
+                    tx.rollback();
+                }
+                session.flush();
+            } catch (ObjectDeletedException | ConstraintViolationException ex) {
+                throw new DAOException("Error: " + ex.getCause().getMessage());
+            }
+        }
+    }
+
+    public <T extends Serializable> void deleteById(final Class clase, final Integer id) throws DAOException {
+        deleteById(clase, id, true);
+    }
+
+    public <T extends Serializable> void deleteById(final Class clase, final Integer id, boolean transaction) throws DAOException {
+        try {
+            if (transaction) {
+                tx = session.beginTransaction();
+            }
+            Object elemento = session.get(clase, id);
+            session.delete(elemento);
             if (transaction) {
                 tx.commit();
             }
@@ -279,6 +304,7 @@ public class GenericDAO {
             final Class clase,
             final List<Filtro> filtros) throws DAOException {
         List<T> elementos = null;
+        System.out.println("clase: " + clase.getName());
         Criteria criteria = session.createCriteria(clase);
         Field[] camposClase = clase.getDeclaredFields();
         Field campoId = null;
@@ -296,6 +322,7 @@ public class GenericDAO {
                 Object objetoValor = null;
                 Object objetoValorFinal = null;
                 for (Filtro filtro : filtros) {
+                    System.out.println("filtro: " + filtro);
                     if (filtro.isCampoFecha()) {
                         objetoValor = filtro.getValorFecha();
                         if (filtro.isIntervalo()) {
@@ -376,6 +403,7 @@ public class GenericDAO {
                     }
                     contadorFiltros++;
                 }
+                System.out.println("expresion: " + expressionCompuesta.toString());
                 criteria.add(expressionCompuesta);
             }
             if (campoId != null) {
@@ -389,6 +417,121 @@ public class GenericDAO {
             throw new DAOException(e.getCause().getMessage());
         }
         return elementos;
+    }
+
+    public ScrollableResults findByComponents(
+            final Class clase,
+            final List<Filtro> filtros,
+            final int fetchSize) throws DAOException {
+        Criteria criteria = session.createCriteria(clase);
+        criteria.setFetchSize(fetchSize);
+        Field[] camposClase = clase.getDeclaredFields();
+        Field campoId = null;
+        Criterion expression = null;
+        Criterion expressionCompuesta = null;
+        Boolean andCondition = null;
+        for (Field field : camposClase) {
+            if (field.isAnnotationPresent(Id.class)) {
+                campoId = field;
+            }
+        }
+        try {
+            int contadorFiltros = 0;
+            if (filtros != null && !filtros.isEmpty()) {
+                Object objetoValor = null;
+                Object objetoValorFinal = null;
+                for (Filtro filtro : filtros) {
+                    System.out.println("filtro: " + filtro);
+                    if (filtro.isCampoFecha()) {
+                        objetoValor = filtro.getValorFecha();
+                        if (filtro.isIntervalo()) {
+                            objetoValorFinal = filtro.getValorFechaFinal();
+                        }
+                    } else if (filtro.isCampoNumerico()) {
+                        if (Integer.class.getSimpleName().equals(filtro.getCampoEntidad().getType().getSimpleName())) {
+                            objetoValor = filtro.getValorNumerico().intValue();
+                            if (filtro.isIntervalo()) {
+                                objetoValorFinal = filtro.getValorNumericoFinal().intValue();
+                            }
+                        } else if (Long.class.getSimpleName().equals(filtro.getCampoEntidad().getType().getSimpleName())) {
+                            objetoValor = filtro.getValorNumerico().longValue();
+                            if (filtro.isIntervalo()) {
+                                objetoValorFinal = filtro.getValorNumericoFinal().longValue();
+                            }
+                        } else if (Short.class.getSimpleName().equals(filtro.getCampoEntidad().getType().getSimpleName())) {
+                            objetoValor = filtro.getValorNumerico().shortValue();
+                            if (filtro.isIntervalo()) {
+                                objetoValorFinal = filtro.getValorNumericoFinal().shortValue();
+                            }
+                        } else if (Float.class.getSimpleName().equals(filtro.getCampoEntidad().getType().getSimpleName())) {
+                            objetoValor = filtro.getValorNumerico().floatValue();
+                            if (filtro.isIntervalo()) {
+                                objetoValorFinal = filtro.getValorNumericoFinal().floatValue();
+                            }
+                        } else if (Double.class.getSimpleName().equals(filtro.getCampoEntidad().getType().getSimpleName())) {
+                            objetoValor = filtro.getValorNumerico();
+                            if (filtro.isIntervalo()) {
+                                objetoValorFinal = filtro.getValorNumericoFinal();
+                            }
+                        }
+                    } else if (filtro.isCampoString()) {
+                        objetoValor = filtro.getValorString();
+                    } else if (filtro.isCampoBooleano()) {
+                        objetoValor = new Boolean(filtro.getValorBooleano());
+                    } else if (filtro.isCampoCatalogo()) {
+                        objetoValor = filtro.getValorCatalogo();
+                    }
+                    if (filtro.getComparador() != null) {
+                        switch (filtro.getComparador()) {
+                            case "igual":
+                                expression = Restrictions.eq(filtro.getNombreCampoClase(), objetoValor);
+                                break;
+                            case "diferente":
+                                expression = Restrictions.ne(filtro.getNombreCampoClase(), objetoValor);
+                                break;
+                            case "contenga":
+                                expression = Restrictions.like(filtro.getNombreCampoClase(), objetoValor != null ? objetoValor.toString() : "nothing_to_find", MatchMode.ANYWHERE);
+                                break;
+                            case "mayor":
+                                expression = Restrictions.gt(filtro.getNombreCampoClase(), objetoValor);
+                                break;
+                            case "mayorIgual":
+                                expression = Restrictions.ge(filtro.getNombreCampoClase(), objetoValor);
+                                break;
+                            case "menor":
+                                expression = Restrictions.lt(filtro.getNombreCampoClase(), objetoValor);
+                                break;
+                            case "menorIgual":
+                                expression = Restrictions.le(filtro.getNombreCampoClase(), objetoValor);
+                                break;
+                            case "entre":
+                                expression = Restrictions.between(filtro.getNombreCampoClase(), objetoValor, objetoValorFinal);
+                                break;
+                        }
+                    }
+                    if (contadorFiltros == 0) {
+                        expressionCompuesta = expression;
+                    } else if (andCondition != null && andCondition) {
+                        expressionCompuesta = Restrictions.and(expressionCompuesta, expression);
+                    } else if (andCondition != null && !andCondition) {
+                        expressionCompuesta = Restrictions.or(expressionCompuesta, expression);
+                    }
+                    andCondition = filtro.getAgregar() != null ? filtro.getAgregar().equalsIgnoreCase("y") : null;
+                    if (andCondition == null) {
+                        break;
+                    }
+                    contadorFiltros++;
+                }
+                System.out.println("expresion: " + expressionCompuesta.toString());
+                criteria.add(expressionCompuesta);
+            }
+            if (campoId != null) {
+                criteria.addOrder(Order.asc(campoId.getName()));
+            }
+            return criteria.scroll();
+        } catch (HibernateException e) {
+            throw new DAOException(e.getCause().getMessage());
+        }
     }
 
     public ScrollableResults findByComponents(
@@ -475,5 +618,9 @@ public class GenericDAO {
             session.flush();
         }
         return res;
+    }
+
+    public Map getMetaDataPojos() {
+        return sessionFactory.getAllClassMetadata();
     }
 }

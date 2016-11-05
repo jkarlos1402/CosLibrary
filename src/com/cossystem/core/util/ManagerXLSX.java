@@ -4,11 +4,11 @@ import com.cossystem.core.dao.GenericDAO;
 import com.cossystem.core.exception.CossException;
 import com.cossystem.core.exception.DAOException;
 import com.cossystem.core.exception.DataBaseException;
-import com.cossystem.core.pojos.accesopantallas.TblAccesoPantallasCampos;
+import com.cossystem.core.pojos.TblAccesoPantallas;
+import com.cossystem.core.pojos.TblAccesoPantallasCampos;
 import com.monitorjbl.xlsx.StreamingReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.Column;
@@ -48,10 +50,11 @@ import org.hibernate.ScrollableResults;
 import org.hibernate.StaleStateException;
 import org.hibernate.Transaction;
 import org.hibernate.TransientObjectException;
+import org.hibernate.exception.ConstraintViolationException;
 
 public class ManagerXLSX {
 
-    public static String generaArchivoExcel(Class claseEntidad, Map filtros, String rutaDestino) throws DAOException {
+    public static String generaArchivoExcel(Class claseEntidad, Class claseDAOEntidad, List<Filtro> filtros, String rutaDestino, TblAccesoPantallas menu, Properties propiedades) throws DAOException, CossException {
         GenericDAO genericDAO = null;
         SXSSFWorkbook workBook = new SXSSFWorkbook();
         workBook.setCompressTempFiles(true);
@@ -59,10 +62,16 @@ public class ManagerXLSX {
         String nombreArchivoSalida = "";
         File directorioBase;
         try {
-            genericDAO = new GenericDAO();
+            if (claseDAOEntidad != null) {
+                genericDAO = (GenericDAO) claseDAOEntidad.newInstance();
+            } else {
+                genericDAO = new GenericDAO();
+            }
             List<TblAccesoPantallasCampos> configuracion = Configuracion.obtieneConfiguracion(claseEntidad);
+            System.out.println("clase para excel: " + claseEntidad.getName());
+            System.out.println("filtros: " + filtros.size());
             ScrollableResults results = genericDAO.findByComponents(claseEntidad, filtros, 200);
-            creaHojaExcel(workBook, claseEntidad, results, configuracion);
+            creaHojaExcel(workBook, claseEntidad, results, configuracion, menu, filtros, propiedades);
             directorioBase = new File(rutaDestino);
             if (!directorioBase.isDirectory()) {
                 directorioBase.mkdirs();
@@ -70,12 +79,10 @@ public class ManagerXLSX {
             nombreArchivoSalida = "tempsxssf" + Calendar.getInstance().getTime().getTime() + ".xlsx";
             out = new FileOutputStream(rutaDestino + File.separator + nombreArchivoSalida);
             workBook.write(out);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(ManagerXLSX.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(ManagerXLSX.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DataBaseException | CossException ex) {
-            Logger.getLogger(ManagerXLSX.class.getName()).log(Level.SEVERE, null, ex);
+            throw new CossException(ex.getMessage());
+        } catch (DataBaseException | CossException | InstantiationException | IllegalAccessException ex) {
+            throw new CossException(ex.getMessage());
         } finally {
             if (genericDAO != null) {
                 genericDAO.closeDAO();
@@ -91,11 +98,12 @@ public class ManagerXLSX {
         return nombreArchivoSalida;
     }
 
-    private static void creaHojaExcel(SXSSFWorkbook workBook, Class claseEntidad, ScrollableResults results, List<TblAccesoPantallasCampos> configuracion) throws CossException {
+    private static void creaHojaExcel(SXSSFWorkbook workBook, Class claseEntidad, ScrollableResults results, List<TblAccesoPantallasCampos> configuracion, TblAccesoPantallas menu, List<Filtro> filtros, Properties propiedades) throws CossException {
         Field[] camposClase = claseEntidad.getDeclaredFields();
         List<Field> camposColumnas = new ArrayList<>();
         List<Method> metodosColumnas = new ArrayList<>();
         List<String> encabezadosHoja;
+        List<String> encabezadosHojaRelacion;
         List<Field> camposRelaciones = new ArrayList<>();
         List<Method> metodosRelaciones = new ArrayList<>();
         List<Field> camposManyToOne = new ArrayList<>();
@@ -107,10 +115,44 @@ public class ManagerXLSX {
         Row row;
         Cell cell;
         Class<?> listClass = null;
+        Map<String, List<TblAccesoPantallasCampos>> configuracionRelaciones = new TreeMap<>();
         encabezadosHoja = obtieneDescripcionEncabezados(claseEntidad, configuracion);
         SXSSFSheet sheetRelacion;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        int contadorRow = 0;
         if (encabezadosHoja != null && !encabezadosHoja.isEmpty()) {
-            row = sheet.createRow(sheet.getLastRowNum());
+//            row = sheet.createRow(sheet.getLastRowNum());
+//            cell = row.createCell(encabezadosHoja.size() / 2);
+//            cell.setCellValue(menu.getTituloExcel());
+//            row = sheet.createRow(sheet.getLastRowNum());
+//            cell = row.createCell(0);
+//            if (filtros != null && !filtros.isEmpty()) {
+//                cell.setCellValue("Filtros:");
+//                if(filtros.size() == 1 && (filtros.get(0).getComparador() == null || "".equals(filtros.get(0).getComparador().trim()))){
+//                    cell = row.createCell(row.getLastCellNum());
+//                    cell.setCellValue("*Todos los registros");
+//                }
+//                for (Filtro filtro : filtros) {
+//                    if (filtro.getComparador() != null && !"".equals(filtro.getComparador().trim())) {
+//                        cell = row.createCell(row.getLastCellNum());
+//                        if (filtro.isCampoFecha()) {
+//                            sdf = new SimpleDateFormat(filtro.getConfCampo() != null && filtro.getConfCampo().getFormatoCampo() != null && !"".equals(filtro.getConfCampo().getFormatoCampo().trim()) ? filtro.getConfCampo().getFormatoCampo().trim() : "dd/MM/yyyy");
+//                        }
+//                        String valorFiltro = filtro.isCampoString() ? filtro.getValorString() : filtro.isCampoNumerico() ? filtro.getValorNumerico() + "" : filtro.isCampoFecha() ? sdf.format(filtro.getValorFecha()) : filtro.isCampoBooleano() ? (filtro.getValorBooleano().equalsIgnoreCase("true") ? "1" : "0") : filtro.isCampoCatalogo() ? filtro.getValorCatalogo().toString() : "";
+//                        if (filtro.isIntervalo()) {
+//                            valorFiltro += " - ";
+//                            valorFiltro += filtro.isCampoNumerico() ? filtro.getValorNumericoFinal() : filtro.isCampoFecha() ? sdf.format(filtro.getValorFechaFinal()) : "";
+//                        }
+//                        cell.setCellValue(filtro.getDescCampo() + " " + filtro.getComparador() + " " + valorFiltro);
+//                    }
+//                }
+//            }
+            int indexRowInicio = propiedades != null && propiedades.containsKey("rowInicioExcel") ? Integer.parseInt(propiedades.getProperty("rowInicioExcel")) : 0;
+            row = sheet.createRow(sheet.getLastRowNum());// agregra +1 cuando si hay titulo y filtros
+            while (contadorRow < indexRowInicio) {
+                row = sheet.createRow(sheet.getLastRowNum() + 1);
+                contadorRow++;
+            }
             for (String encabezado : encabezadosHoja) {
                 cell = row.createCell(row.getLastCellNum() != -1 ? row.getLastCellNum() : 0);
                 cell.setCellValue(encabezado);
@@ -119,6 +161,7 @@ public class ManagerXLSX {
         for (Field campo : camposClase) {
             if (campo.isAnnotationPresent(OneToMany.class)) {
                 listClass = obtieneTipoListaDeCampo(campo);
+                configuracionRelaciones.put(listClass.getSimpleName(), Configuracion.obtieneConfiguracion(listClass));
                 nombreTablaRelacion = ((Table) listClass.getAnnotation(Table.class)).name();
             } else {
                 nombreTablaRelacion = null;
@@ -128,10 +171,10 @@ public class ManagerXLSX {
                 if (sheetRelacion == null) {
                     sheetRelacion = workBook.createSheet(nombreTablaRelacion);
                     sheetRelacion.setRandomAccessWindowSize(200);
-                    encabezadosHoja = obtieneDescripcionEncabezados(listClass, configuracion);
-                    if (encabezadosHoja != null && !encabezadosHoja.isEmpty()) {
+                    encabezadosHojaRelacion = obtieneDescripcionEncabezados(listClass, configuracionRelaciones.get(listClass.getSimpleName()));
+                    if (encabezadosHojaRelacion != null && !encabezadosHojaRelacion.isEmpty()) {
                         row = sheetRelacion.createRow(sheetRelacion.getLastRowNum());
-                        for (String encabezado : encabezadosHoja) {
+                        for (String encabezado : encabezadosHojaRelacion) {
                             cell = row.createCell(row.getLastCellNum() != -1 ? row.getLastCellNum() : 0);
                             cell.setCellValue(encabezado);
                         }
@@ -186,7 +229,7 @@ public class ManagerXLSX {
                             List<?> registrosRelacion = (List<?>) metodosColumnas.get(i).invoke(results.get(0));
                             metodosRelaciones.clear();
                             camposRelaciones.clear();
-                            obtieneCamposMetodosColumnas(listClass, configuracion, metodosRelaciones, camposRelaciones);
+                            obtieneCamposMetodosColumnas(listClass, configuracionRelaciones.get(listClass.getSimpleName()), metodosRelaciones, camposRelaciones);
                             for (Object relacion : registrosRelacion) {
                                 row = sheetRelacion.createRow(sheetRelacion.getLastRowNum() + 1);
                                 for (int j = 0; j < metodosRelaciones.size(); j++) {
@@ -276,8 +319,24 @@ public class ManagerXLSX {
             if (nombreCampoTabla != null) {
                 for (Method method : metodosClase) {
                     if (method.getName().equalsIgnoreCase(pre + campo.getName())) {
-                        metodos.add(method);
-                        campos.add(campo);
+                        if (campo.isAnnotationPresent(Id.class)) {
+                            Method metodoTemp;
+                            Field campoTemp;
+                            if (!metodos.isEmpty()) {
+                                metodoTemp = metodos.get(0);
+                                campoTemp = campos.get(0);
+                                metodos.set(0, method);
+                                campos.set(0, campo);
+                                metodos.add(metodoTemp);
+                                campos.add(campoTemp);
+                            } else {
+                                metodos.add(method);
+                                campos.add(campo);
+                            }
+                        } else {
+                            metodos.add(method);
+                            campos.add(campo);
+                        }
                         break;
                     }
                 }
@@ -328,17 +387,20 @@ public class ManagerXLSX {
         }
     }
 
-    public static void cargaCatalogoExcel(Class claseEntidad, String pathFile) throws CossException, IOException {
+    public static void cargaCatalogoExcel(Class claseEntidad, String pathFile, String paqueteDao, Integer indexRowInicial) throws CossException, IOException {
         List<TblAccesoPantallasCampos> configuracion = null;
+        Map<String, List<TblAccesoPantallasCampos>> configuracionRelaciones = new TreeMap<>();
+        Map<String, String> nombreCampoRelacionClase = new TreeMap<>();
+        //Class claseEntidadTemp;
         Field[] camposClaseEntidad = claseEntidad != null ? claseEntidad.getDeclaredFields() : null;
         List<String> nombreHojasRelacion = null;
         List<Class> clasesRelacion = null;
         List<Field> camposColumnas = new ArrayList<>();
         List<Method> metodosColumnas = new ArrayList<>();
-        List<Integer> indicesMetodos = new ArrayList<>();
+        List<Integer> indicesColumnas = new ArrayList<>();
         List<Field> camposRelaciones = new ArrayList<>();
         List<Method> metodosRelaciones = new ArrayList<>();
-        List<Integer> indicesMetodosRelaciones = new ArrayList<>();
+        List<Integer> indicesColumnasRelaciones = new ArrayList<>();
         String nombreHoja = null;
         Sheet sheet;
         Sheet sheetRelacion;
@@ -347,29 +409,42 @@ public class ManagerXLSX {
         Method metodoId = null;
         Integer idABuscar = null;
         Integer idRelacion = null;
-        String nuevoABuscar = null;
-        String nombreColumnaId = null;
+        String nuevoABuscar;
+//        String nombreColumnaId = null;
         Class claseDAO = null;
+        Class claseRelacion = null;
         GenericDAO genericDAO = null;
         Transaction transaction = null;
-        boolean bndRelacion = false;
-        boolean bndEliminar = false;
+        boolean bndRelacion;
+        boolean bndEliminar;
         int contadorBatch = 0;
         Object objEntidad = null;
         Object objEntidadRelacion = null;
+        String nombreTablaRelacion;
         String nombreTabla = claseEntidad != null ? ((Table) claseEntidad.getAnnotation(Table.class)).name() : null;
-        String nombreTablaRelacion = null;
+        nombreHoja = (((Table) claseEntidad.getAnnotation(Table.class)).name());
+//        try {
+//            configuracion = Configuracion.obtieneConfiguracion(claseEntidad);
+//            if (claseEntidad != null && claseEntidad.isAnnotationPresent(Table.class)) {
+//                nombreHoja = (((Table) claseEntidad.getAnnotation(Table.class)).name());
+//                nombreTabla = ((Table) claseEntidad.getAnnotation(Table.class)).name();
+//                claseEntidadTemp = Class.forName(claseEntidad.getName() + "Temp");
+//                claseEntidad = claseEntidadTemp;
+//            }
+//        } catch (ClassNotFoundException | AuxiliarException ex) {
+//            //nothing
+//        }
         if (camposClaseEntidad != null) {
-            configuracion = Configuracion.obtieneConfiguracion(claseEntidad);
             nombreHojasRelacion = new ArrayList<>();
             clasesRelacion = new ArrayList<>();
-            if (claseEntidad != null && claseEntidad.isAnnotationPresent(Table.class)) {
-                nombreHoja = (((Table) claseEntidad.getAnnotation(Table.class)).name());
-            }
+            configuracion = Configuracion.obtieneConfiguracion(claseEntidad);
             for (Field field : camposClaseEntidad) {
                 if (field.isAnnotationPresent(OneToMany.class)) {
                     nombreHojasRelacion.add(((Table) obtieneTipoListaDeCampo(field).getAnnotation(Table.class)).name());
-                    clasesRelacion.add(obtieneTipoListaDeCampo(field));
+                    claseRelacion = obtieneTipoListaDeCampo(field);
+                    clasesRelacion.add(claseRelacion);
+                    configuracionRelaciones.put(claseRelacion.getSimpleName(), Configuracion.obtieneConfiguracion(claseRelacion));
+                    nombreCampoRelacionClase.put(claseRelacion.getSimpleName(), ((OneToMany) field.getAnnotation(OneToMany.class)).mappedBy());
                 }
             }
         }
@@ -381,11 +456,10 @@ public class ManagerXLSX {
             try {
                 sheet = workbook.getSheet(nombreHoja);
                 obtieneCamposMetodosColumnas(claseEntidad, metodosColumnas, camposColumnas, false);
-                for (TblAccesoPantallasCampos config : configuracion) {
-                    for (int i = 0; i < camposColumnas.size(); i++) {
-                        if (camposColumnas.get(i).isAnnotationPresent(Id.class) && config.getEsTransaccional() != null && config.getEsTransaccional()) {
-                            claseDAO = Class.forName(GenericDAO.class.getPackage().getName() + ".catalogo." + claseEntidad.getSimpleName() + "DAO");
-                        }
+                for (int i = 0; i < camposColumnas.size(); i++) {
+                    if (camposColumnas.get(i).isAnnotationPresent(Id.class)) {
+                        claseDAO = Class.forName(paqueteDao + "." + claseEntidad.getSimpleName() + "DAO");
+                        break;
                     }
                 }
                 if (claseDAO != null) {
@@ -393,71 +467,83 @@ public class ManagerXLSX {
                 } else {
                     genericDAO = new GenericDAO();
                 }
-                int contadorRow = 0;
                 transaction = genericDAO.getSession().beginTransaction();
+                Integer indexColumnaExcelId = null;
                 for (Row row : sheet) {
-                    if (contadorRow == 0) {
+                    if (row.getRowNum() == indexRowInicial) {
+                        for (int i = 0; i < camposColumnas.size(); i++) {
+                            indicesColumnas.add(null);
+                        }
+                        labelColumna:
                         for (Cell cell : row) {
                             if (cell.getCellType() == Cell.CELL_TYPE_STRING && cell.getStringCellValue() != null && !"".equals(cell.getStringCellValue().trim())) {
-                                labelMetodo:
                                 for (TblAccesoPantallasCampos config : configuracion) {
                                     if (config.getNTabla().equalsIgnoreCase(nombreTabla) && config.getDescripcion().trim().equalsIgnoreCase(cell.getStringCellValue().trim())) {
                                         for (int i = 0; i < camposColumnas.size(); i++) {
-                                            if ((camposColumnas.get(i).isAnnotationPresent(JoinColumn.class) && ((JoinColumn) camposColumnas.get(i).getAnnotation(JoinColumn.class)).name().equalsIgnoreCase(config.getNColumna())) || (camposColumnas.get(i).isAnnotationPresent(Column.class) && ((Column) camposColumnas.get(i).getAnnotation(Column.class)).name().equalsIgnoreCase(config.getNColumna()))) {
-                                                indicesMetodos.add(i);
-                                                break labelMetodo;
+                                            if ((camposColumnas.get(i).isAnnotationPresent(JoinColumn.class) && ((JoinColumn) camposColumnas.get(i).getAnnotation(JoinColumn.class)).name().equalsIgnoreCase(config.getNColumna()))
+                                                    || (camposColumnas.get(i).isAnnotationPresent(Column.class) && ((Column) camposColumnas.get(i).getAnnotation(Column.class)).name().equalsIgnoreCase(config.getNColumna()))) {
+                                                indicesColumnas.set(i, cell.getColumnIndex());
+                                                if (camposColumnas.get(i).isAnnotationPresent(Id.class)) {
+                                                    indexColumnaExcelId = cell.getColumnIndex();
+                                                }
+                                                continue labelColumna;
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                        contadorRow++;
-                    } else {
-                        if (indicesMetodos.isEmpty()) {
+                    } else if (row.getRowNum() > indexRowInicial) {
+                        if (indicesColumnas.isEmpty()) {
                             throw new IllegalArgumentException("Hoja no v\u00e1lida, encabezados err\u00f3neos");
                         }
                         nuevoABuscar = null;
                         bndEliminar = false;
-                        objEntidad = claseEntidad != null ? claseEntidad.newInstance() : null;
-                        for (int i = 0; i < indicesMetodos.size(); i++) {
-                            celdaExcel = row.getCell(i);
-                            metodo = metodosColumnas.get(indicesMetodos.get(i));
-                            if (camposColumnas.get(indicesMetodos.get(i)).isAnnotationPresent(Id.class)) {
-                                nombreColumnaId = ((Column) camposColumnas.get(indicesMetodos.get(i)).getAnnotation(Column.class)).name();
-                                metodoId = metodo;
+                        objEntidad = claseEntidad.newInstance();
+                        celdaExcel = row.getCell(indexColumnaExcelId);
+                        for (int i = 0; i < indicesColumnas.size(); i++) {
+                            if (camposColumnas.get(i).isAnnotationPresent(Id.class)) {
+                                metodoId = metodosColumnas.get(i);
                                 if (celdaExcel.getCellType() == Cell.CELL_TYPE_STRING) {
                                     if (celdaExcel.getStringCellValue().trim().matches("[Nn].*")) {
                                         nuevoABuscar = celdaExcel.getStringCellValue().trim();
-                                        continue;
+                                        break;
                                     } else {
                                         idABuscar = Integer.parseInt(celdaExcel.getStringCellValue().trim());
                                         if (idABuscar < 0) {
                                             idABuscar = Math.abs(idABuscar);
                                             bndEliminar = true;
                                         }
-                                        metodo.invoke(objEntidad, idABuscar);
-                                        continue;
+                                        //metodoId.invoke(objEntidad, idABuscar);
+                                        objEntidad = genericDAO.findById(claseEntidad, idABuscar); // para mantener los campos no incluidos en el excel descomentar esta linea, de lo contrario se colocara null en los campos no incluidos en el excel
+                                        break;
                                     }
                                 } else if (celdaExcel.getCellType() == Cell.CELL_TYPE_NUMERIC) {
                                     if (celdaExcel.getNumericCellValue() < 0) {
                                         bndEliminar = true;
                                     }
                                     idABuscar = Math.abs(new Double(celdaExcel.getNumericCellValue()).intValue());
-                                    metodo.invoke(objEntidad, idABuscar);
-                                    continue;
+                                    //metodoId.invoke(objEntidad, idABuscar);
+                                    objEntidad = genericDAO.findById(claseEntidad, idABuscar); // para mantener los campos no incluidos en el excel descomentar esta linea, de lo contrario se colocara null en los campos no incluidos en el excel
+                                    break;
                                 }
                             }
-                            if (camposColumnas.get(indicesMetodos.get(i)).isAnnotationPresent(Column.class)) {
-                                seteaCampoAObjeto(celdaExcel, objEntidad, camposColumnas.get(indicesMetodos.get(i)), metodo);
-                            } else if (camposColumnas.get(indicesMetodos.get(i)).isAnnotationPresent(ManyToOne.class)) {
-                                seteaIdCatalogoAObjeto(celdaExcel, objEntidad, camposColumnas.get(indicesMetodos.get(i)), metodo);
+                        }
+                        for (int i = 0; i < indicesColumnas.size(); i++) {
+                            if (indicesColumnas.get(i) != null && !camposColumnas.get(i).isAnnotationPresent(Id.class)) {
+                                celdaExcel = row.getCell(indicesColumnas.get(i));
+                                metodo = metodosColumnas.get(i);
+                                if (camposColumnas.get(i).isAnnotationPresent(Column.class)) {
+                                    seteaCampoAObjeto(celdaExcel, objEntidad, camposColumnas.get(i), metodo);
+                                } else if (camposColumnas.get(i).isAnnotationPresent(ManyToOne.class)) {
+                                    seteaIdCatalogoAObjeto(celdaExcel, objEntidad, camposColumnas.get(i), metodo);
+                                }
                             }
                         }
                         if (bndEliminar) {
                             objEntidad = genericDAO.findById(claseEntidad, idABuscar);
                             if (objEntidad != null) {
-                                genericDAO.delete((Serializable) objEntidad, false);
+                                genericDAO.delete((Serializable) objEntidad, false);                              
                                 contadorBatch++;
                             } else {
                                 throw new IllegalArgumentException("Identificador no v\u00e1alido");
@@ -474,29 +560,41 @@ public class ManagerXLSX {
                             contadorBatch = 0;
                         }
                         idABuscar = claseEntidad.getMethod(metodoId.getName().replaceFirst("set", "get")).invoke(objEntidad) != null ? (Integer) claseEntidad.getMethod(metodoId.getName().replaceFirst("set", "get")).invoke(objEntidad) : null;
-                        // a partir de aqui se guardan las relaciones 
+                        // a partir de aqui se guardan las relaciones
+                        System.out.println("id a buscar en las hojas de relacion: " + idABuscar + " o nuevo a buscar: " + nuevoABuscar);
                         InputStream streamRelaciones = new FileInputStream(pathFile);
                         try (Workbook workbookRelacion = StreamingReader.builder().rowCacheSize(100).bufferSize(4096).open(streamRelaciones)) {
                             if (nombreHojasRelacion != null && clasesRelacion != null) {
                                 for (int i = 0; i < nombreHojasRelacion.size(); i++) {
                                     try {
-                                        indicesMetodosRelaciones.clear();
+                                        indicesColumnasRelaciones.clear();
                                         nombreTablaRelacion = clasesRelacion.get(i) != null ? ((Table) clasesRelacion.get(i).getAnnotation(Table.class)).name() : null;
                                         sheetRelacion = workbookRelacion.getSheet(nombreHojasRelacion.get(i));
                                         obtieneCamposMetodosColumnas(clasesRelacion.get(i), metodosRelaciones, camposRelaciones, false);
                                         int contadorRowRelacion = 0;
+                                        for (int j = 0; j < camposRelaciones.size(); j++) {
+                                            indicesColumnasRelaciones.add(null);
+                                        }
+                                        Integer indexLlaveforanea = null;
+                                        Integer indexIdRelacion = null;
                                         labelRowRelacion:
                                         for (Row rowRelacion : sheetRelacion) {
                                             if (contadorRowRelacion == 0) {
+                                                labelColumna:
                                                 for (Cell cellRelacion : rowRelacion) {
                                                     if (cellRelacion.getCellType() == Cell.CELL_TYPE_STRING && cellRelacion.getStringCellValue() != null && !"".equals(cellRelacion.getStringCellValue().trim())) {
-                                                        labelMetodo:
-                                                        for (TblAccesoPantallasCampos config : configuracion) {
+                                                        for (TblAccesoPantallasCampos config : configuracionRelaciones.get(clasesRelacion.get(i).getSimpleName())) {
                                                             if (config.getNTabla().equalsIgnoreCase(nombreTablaRelacion) && config.getDescripcion().trim().equalsIgnoreCase(cellRelacion.getStringCellValue().trim())) {
                                                                 for (int j = 0; j < camposRelaciones.size(); j++) {
                                                                     if ((camposRelaciones.get(j).isAnnotationPresent(JoinColumn.class) && ((JoinColumn) camposRelaciones.get(j).getAnnotation(JoinColumn.class)).name().equalsIgnoreCase(config.getNColumna())) || (camposRelaciones.get(j).isAnnotationPresent(Column.class) && ((Column) camposRelaciones.get(j).getAnnotation(Column.class)).name().equalsIgnoreCase(config.getNColumna()))) {
-                                                                        indicesMetodosRelaciones.add(j);
-                                                                        break labelMetodo;
+                                                                        indicesColumnasRelaciones.set(j, cellRelacion.getColumnIndex());
+                                                                        if (camposRelaciones.get(j).getName().equals(nombreCampoRelacionClase.get(clasesRelacion.get(i).getSimpleName()))) {
+                                                                            indexLlaveforanea = cellRelacion.getColumnIndex();
+                                                                        }
+                                                                        if (camposRelaciones.get(j).isAnnotationPresent(Id.class)) {
+                                                                            indexIdRelacion = cellRelacion.getColumnIndex();
+                                                                        }
+                                                                        continue labelColumna;
                                                                     }
                                                                 }
                                                             }
@@ -507,49 +605,74 @@ public class ManagerXLSX {
                                             } else {
                                                 objEntidadRelacion = clasesRelacion.get(i) != null ? clasesRelacion.get(i).newInstance() : null;
                                                 bndRelacion = false;
-                                                for (int j = 0; j < indicesMetodosRelaciones.size(); j++) {
-                                                    celdaExcel = rowRelacion.getCell(j);
-                                                    metodo = metodosRelaciones.get(indicesMetodosRelaciones.get(j));
-                                                    if (camposRelaciones.get(indicesMetodosRelaciones.get(j)).isAnnotationPresent(Id.class)) {
+                                                celdaExcel = rowRelacion.getCell(indexLlaveforanea);
+                                                if (celdaExcel == null || (celdaExcel.getCellType() == Cell.CELL_TYPE_STRING && !celdaExcel.getStringCellValue().trim().equalsIgnoreCase(nuevoABuscar)) || (celdaExcel.getCellType() == Cell.CELL_TYPE_NUMERIC && new Double(celdaExcel.getNumericCellValue()).intValue() != idABuscar) || (celdaExcel.getCellType() == Cell.CELL_TYPE_BLANK)) {
+                                                    contadorRowRelacion++;
+                                                    continue;
+                                                }
+                                                celdaExcel = rowRelacion.getCell(indexIdRelacion);
+                                                System.out.println("celda de idRelacion: " + celdaExcel);
+                                                System.out.println("objEntidadRelacion clase: " + objEntidadRelacion.getClass().getSimpleName());
+                                                for (int j = 0; j < indicesColumnasRelaciones.size(); j++) {
+                                                    System.out.println("j: "+j);
+                                                    if (camposRelaciones.get(j).isAnnotationPresent(Id.class)) {
+                                                        System.out.println("entro al campo id");
+                                                        metodoId = metodosRelaciones.get(j);
                                                         if (celdaExcel.getCellType() == Cell.CELL_TYPE_STRING) {
                                                             if (celdaExcel.getStringCellValue().trim().matches("[Nn].*")) {
-                                                                continue;
-                                                            } else {
-                                                                idRelacion = Integer.parseInt(celdaExcel.getStringCellValue().trim());
+                                                                break;
+                                                            } else {                                                                
+                                                                idRelacion = Integer.parseInt(celdaExcel.getStringCellValue().trim());                                                                
                                                                 if (idRelacion < 0) {
+                                                                    
                                                                     idRelacion = Math.abs(idRelacion);
                                                                     bndEliminar = true;
                                                                 }
-                                                                metodo.invoke(objEntidadRelacion, idRelacion);
-                                                                continue;
+                                                                //metodoId.invoke(objEntidadRelacion, idRelacion);
+                                                                objEntidadRelacion = genericDAO.findById(clasesRelacion.get(i), idRelacion);
+                                                                System.out.println("objeto encontrado;");
+                                                                break;
                                                             }
                                                         } else if (celdaExcel.getCellType() == Cell.CELL_TYPE_NUMERIC) {
                                                             if (celdaExcel.getNumericCellValue() < 0) {
                                                                 bndEliminar = true;
                                                             }
                                                             idRelacion = Math.abs(new Double(celdaExcel.getNumericCellValue()).intValue());
-                                                            metodo.invoke(objEntidadRelacion, idRelacion);
-                                                            continue;
+                                                            //metodoId.invoke(objEntidadRelacion, idRelacion);
+                                                            objEntidadRelacion = genericDAO.findById(clasesRelacion.get(i), idRelacion);
+                                                            break;
                                                         }
                                                     }
-                                                    if (camposRelaciones.get(indicesMetodosRelaciones.get(j)).isAnnotationPresent(JoinColumn.class) && ((JoinColumn) camposRelaciones.get(indicesMetodosRelaciones.get(j)).getAnnotation(JoinColumn.class)).referencedColumnName().equals(nombreColumnaId)) {
-                                                        if (celdaExcel == null || (celdaExcel.getCellType() == Cell.CELL_TYPE_STRING && !celdaExcel.getStringCellValue().trim().equalsIgnoreCase(nuevoABuscar)) || (celdaExcel.getCellType() == Cell.CELL_TYPE_NUMERIC && new Double(celdaExcel.getNumericCellValue()).intValue() != idABuscar) || (celdaExcel.getCellType() == Cell.CELL_TYPE_BLANK)) {
-                                                            contadorRowRelacion++;
-                                                            continue labelRowRelacion;
-                                                        } else if (celdaExcel.getCellType() == Cell.CELL_TYPE_STRING && celdaExcel.getStringCellValue().trim().equalsIgnoreCase(nuevoABuscar) || (celdaExcel.getCellType() == Cell.CELL_TYPE_NUMERIC && new Double(celdaExcel.getNumericCellValue()).intValue() == idABuscar)) {
-                                                            bndRelacion = true;
-                                                            if (metodo.getParameterTypes()[0].getName().equals(claseEntidad.getName())) {
-                                                                metodo.invoke(objEntidadRelacion, objEntidad);
-                                                            } else {
-                                                                metodo.invoke(objEntidadRelacion, idABuscar != null ? idABuscar : null);
+                                                    System.out.println("objeto relacion encontrado: "+objEntidadRelacion);
+                                                }
+                                                for (int j = 0; j < indicesColumnasRelaciones.size(); j++) {
+                                                    if (indicesColumnasRelaciones.get(j) != null && !camposRelaciones.get(j).isAnnotationPresent(Id.class)) {
+                                                        celdaExcel = rowRelacion.getCell(indicesColumnasRelaciones.get(j));
+                                                        metodo = metodosRelaciones.get(j);
+                                                        if (camposRelaciones.get(j).getName().equals(nombreCampoRelacionClase.get(clasesRelacion.get(i).getSimpleName()))) {
+                                                            if (celdaExcel.getCellType() == Cell.CELL_TYPE_STRING && celdaExcel.getStringCellValue().trim().equalsIgnoreCase(nuevoABuscar) || (celdaExcel.getCellType() == Cell.CELL_TYPE_NUMERIC && new Double(celdaExcel.getNumericCellValue()).intValue() == idABuscar)) {
+                                                                bndRelacion = true;
+                                                                if (metodo.getParameterTypes()[0].getName().equals(claseEntidad.getName())) {
+                                                                    metodo.invoke(objEntidadRelacion, objEntidad);
+                                                                } else {
+                                                                    metodo.invoke(objEntidadRelacion, idABuscar != null ? idABuscar : null);
+                                                                }
+                                                                continue;
                                                             }
-                                                            continue;
                                                         }
-                                                    }
-                                                    if (camposRelaciones.get(indicesMetodosRelaciones.get(j)).isAnnotationPresent(Column.class)) {
-                                                        seteaCampoAObjeto(celdaExcel, objEntidadRelacion, camposRelaciones.get(indicesMetodosRelaciones.get(j)), metodo);
-                                                    } else if (camposRelaciones.get(indicesMetodosRelaciones.get(j)).isAnnotationPresent(ManyToOne.class)) {
-                                                        seteaIdCatalogoAObjeto(celdaExcel, objEntidadRelacion, camposRelaciones.get(indicesMetodosRelaciones.get(j)), metodo);
+//                                                        if (camposRelaciones.get(j).isAnnotationPresent(Id.class)) {
+//                                                            
+//                                                        }
+//                                                        if (camposRelaciones.get(j).isAnnotationPresent(JoinColumn.class) && ((JoinColumn) camposRelaciones.get(j).getAnnotation(JoinColumn.class)).referencedColumnName().equals(nombreColumnaId)) {
+//                                                            
+//                                                        }
+                                                        if (camposRelaciones.get(j).isAnnotationPresent(Column.class)) {
+                                                            seteaCampoAObjeto(celdaExcel, objEntidadRelacion, camposRelaciones.get(j), metodo);
+                                                        } else if (camposRelaciones.get(j).isAnnotationPresent(ManyToOne.class)) {
+                                                            System.out.println("clase de la relacion: " + objEntidadRelacion.getClass().getSimpleName());
+                                                            System.out.println("objeto de la relacion: " + objEntidadRelacion);
+                                                            seteaIdCatalogoAObjeto(celdaExcel, objEntidadRelacion, camposRelaciones.get(j), metodo);
+                                                        }
                                                     }
                                                 }
                                                 if (bndRelacion) {
@@ -557,6 +680,7 @@ public class ManagerXLSX {
                                                         objEntidadRelacion = genericDAO.findById(clasesRelacion.get(i), idRelacion);
                                                         if (objEntidadRelacion != null) {
                                                             genericDAO.delete((Serializable) objEntidadRelacion, false);
+                                                            bndEliminar = false;
                                                             contadorBatch++;
                                                         } else {
                                                             throw new IllegalArgumentException("Identificador no v\u00e1alido");
@@ -582,7 +706,6 @@ public class ManagerXLSX {
                                 }
                             }
                         }
-                        contadorRow++;
 //                        break;
                     }
                 }
@@ -591,11 +714,14 @@ public class ManagerXLSX {
                 }
             } catch (ArrayIndexOutOfBoundsException ex) {
                 throw new IllegalArgumentException("Archivo inv\u00e1lido");
-            } catch (TransientObjectException | InstantiationException | IllegalAccessException | ParseException | DataBaseException | DAOException | ClassNotFoundException | NoSuchMethodException | SecurityException | StaleStateException | IllegalArgumentException | InvocationTargetException ex) {
+            } catch (TransientObjectException | InstantiationException | IllegalAccessException | ParseException | DataBaseException | DAOException | NoSuchMethodException | SecurityException | StaleStateException | IllegalArgumentException | InvocationTargetException | ConstraintViolationException ex) {
                 if (transaction != null && transaction.isActive()) {
                     transaction.rollback();
                 }
-                throw new CossException(ex.getMessage());
+                ex.printStackTrace();
+                throw new CossException(ex.getClass().getSimpleName() + ": " + ex.getMessage() + ", objEntidad: " + objEntidad + ", objeto relacion: " + objEntidadRelacion);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ManagerXLSX.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
                 if (genericDAO != null) {
                     genericDAO.closeDAO();
@@ -636,7 +762,7 @@ public class ManagerXLSX {
                         metodo.invoke(objeto, new Double(celdaExcel.getNumericCellValue()).floatValue());
                     }
                     break;
-                case Cell.CELL_TYPE_STRING:                    
+                case Cell.CELL_TYPE_STRING:
                     if (campo.getType().getName().equals(Integer.class.getName()) && !"".equals(celdaExcel.getStringCellValue().trim())) {
                         metodo.invoke(objeto, new Integer(celdaExcel.getStringCellValue().trim()));
                     } else if (campo.getType().getName().equals(Double.class.getName()) && !"".equals(celdaExcel.getStringCellValue().trim())) {
@@ -673,13 +799,14 @@ public class ManagerXLSX {
                                 }
                                 break;
                             case Cell.CELL_TYPE_NUMERIC:
+                                System.out.println("id a setear: " + new Double(celdaExcel.getNumericCellValue()).intValue());
                                 field.set(objCampo, new Double(celdaExcel.getNumericCellValue()).intValue());
                                 metodo.invoke(objeto, objCampo);
                                 break;
                         }
                         break;
                     }
-                }                
+                }
             }
         }
     }
